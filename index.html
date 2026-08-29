@@ -44,7 +44,6 @@
       z-index: -1;
     }
 
-    /* CONTENEDOR PRINCIPAL CON ALTURA FIJA Y OVERFLOW HIDDEN */
     .app-container {
       width: 92%;
       max-width: 1150px;
@@ -62,10 +61,10 @@
       gap: 32px;
       padding: 28px;
       position: relative;
-      overflow: hidden; /* Evita que el contenedor entero crezca */
+      overflow: hidden;
     }
 
-    /* SECCIÓN IZQUIERDA: REPRODUCTOR TOTALMENTE FIJO */
+    /* SECCIÓN IZQUIERDA */
     .player-section {
       display: flex;
       flex-direction: column;
@@ -73,7 +72,7 @@
       border-right: 1px solid rgba(255, 255, 255, 0.12);
       padding-right: 32px;
       height: 100%;
-      overflow: hidden; /* Garantiza que la parte izquierda no se mueva */
+      overflow: hidden;
     }
 
     .header-title {
@@ -93,9 +92,11 @@
       margin: 10px 0;
     }
 
+    /* PORTADA CUADRADA RIGIDA */
     .cover-art {
-      width: 320px;
-      height: 320px;
+      width: 300px;
+      height: 300px;
+      aspect-ratio: 1 / 1;
       background: rgba(255, 255, 255, 0.08);
       object-fit: cover;
       border-radius: 16px;
@@ -175,7 +176,7 @@
       justify-content: space-between;
       background: rgba(0, 0, 0, 0.25);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 6px 12px;
+      padding: 8px 12px;
       border-radius: 10px;
     }
 
@@ -296,27 +297,61 @@
     .btn-sub { font-size: 1.05rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
 
-    .file-input-wrapper {
-      position: relative;
+    /* SECCIÓN DERECHA */
+    .queue-section {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       width: 100%;
-      height: 38px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      cursor: pointer;
-      transition: background 0.2s;
+      overflow: hidden;
     }
 
-    .file-input-wrapper:hover { background: rgba(255, 255, 255, 0.22); }
+    .queue-header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
+    }
 
-    .file-input-btn {
-      width: 100%;
-      height: 100%;
+    .queue-header {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    /* BOTÓN DE AÑADIR (+), COMPACTO EN ENCABEZADO */
+    .btn-add-wrapper {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.82rem;
-      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-add-wrapper:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .btn-add-wrapper:active {
+      transform: scale(0.95);
+    }
+
+    .btn-add-icon {
+      font-size: 0.9rem;
+      font-weight: bold;
+      line-height: 1;
       pointer-events: none;
     }
 
@@ -325,27 +360,6 @@
       top: 0; left: 0; width: 100%; height: 100%;
       opacity: 0;
       cursor: pointer;
-    }
-
-    /* SECCIÓN DERECHA: QUEUE CON SCROLL INTERNO INDEPENDIENTE */
-    .queue-section {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      width: 100%;
-      overflow: hidden; /* Evita desbordamientos */
-    }
-
-    .queue-header {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      flex-shrink: 0;
     }
 
     .playlist-tools {
@@ -395,12 +409,11 @@
 
     .sort-select option { background: #1c1c24; }
 
-    /* LISTA CON SCROLL VERTICAL PROPIO */
     .playlist-list {
       list-style: none;
       overflow-y: auto;
-      flex: 1; /* Ocupa exactamente el espacio restante */
-      min-height: 0; /* Necesario para que flexbox respete el overflow en CSS */
+      flex: 1;
+      min-height: 0;
       padding-right: 4px;
     }
 
@@ -503,7 +516,7 @@
   <div class="bg-blur" id="bgBlur"></div>
 
   <div class="app-container">
-    <!-- SECCIÓN IZQUIERDA: PANEL FIJO -->
+    <!-- SECCIÓN IZQUIERDA -->
     <div class="player-section">
       <div class="header-title">Meow Audio App PC 🐈</div>
 
@@ -513,7 +526,7 @@
 
       <div class="track-info">
         <div class="track-title" id="title">Sin reproducción</div>
-        <div class="track-artist" id="artist">Selecciona archivos para comenzar</div>
+        <div class="track-artist" id="artist">Añade canciones con el botón ➕</div>
         <div class="track-album" id="album"></div>
       </div>
 
@@ -558,16 +571,17 @@
         <button class="btn" id="btnNext" title="Siguiente">⏭</button>
         <button class="btn btn-sub" id="btnRepeat" title="Repetir">🔁</button>
       </div>
-
-      <div class="file-input-wrapper">
-        <div class="file-input-btn">📁 Cargar canciones</div>
-        <input type="file" id="fileInput" class="real-file-input" multiple accept=".mp3,.wav,.ogg,.flac,.m4a,.aac,audio/*">
-      </div>
     </div>
 
-    <!-- SECCIÓN DERECHA: QUEUE CON SCROLL INTERNO -->
+    <!-- SECCIÓN DERECHA -->
     <div class="queue-section">
-      <div class="queue-header">Cola de reproducción</div>
+      <div class="queue-header-container">
+        <div class="queue-header">Cola de reproducción</div>
+        <div class="btn-add-wrapper" title="Añadir canciones">
+          <span class="btn-add-icon">➕</span>
+          <input type="file" id="fileInput" class="real-file-input" multiple accept=".mp3,.wav,.ogg,.flac,.m4a,.aac,audio/*">
+        </div>
+      </div>
       
       <div class="playlist-tools">
         <input type="text" id="searchInput" class="search-input" placeholder="Buscar título, artista o álbum...">
@@ -1045,7 +1059,6 @@
       }
     });
 
-    /* LÓGICA DEL AVISO GATUNO */
     document.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem('meowOcultarAviso') === 'true') {
         const aviso = document.getElementById('meow-aviso-privacidad');

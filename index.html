@@ -98,7 +98,7 @@
       display: block;
     }
 
-    /* SECCIÓN REPRODUCTOR (SKIN CLASSIC) */
+    /* SECCIÓN REPRODUCTOR (SKIN MEOW CLASSIC) */
     .player-section {
       display: flex;
       flex-direction: column;
@@ -132,13 +132,14 @@
 
     .cover-art:hover { transform: scale(1.02); }
 
+    /* TIPOGRAFÍA MÁS GRANDE EN MEOW CLASSIC */
     .track-info {
       text-align: center;
       margin-bottom: 2px;
     }
 
     .track-title {
-      font-size: 1.25rem;
+      font-size: 1.45rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
@@ -147,7 +148,7 @@
     }
 
     .track-artist {
-      font-size: 0.95rem;
+      font-size: 1.1rem;
       color: var(--text-muted);
       white-space: nowrap;
       overflow: hidden;
@@ -156,9 +157,9 @@
     }
 
     .track-album {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       color: var(--text-muted);
-      opacity: 0.8;
+      opacity: 0.85;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -169,14 +170,15 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--audio-spec-color);
       text-transform: uppercase;
       min-height: 20px;
+      margin-top: 2px;
     }
 
-    .hires-icon { height: 16px; width: auto; }
+    .hires-icon { height: 18px; width: auto; }
 
     .status-badge {
       font-size: 0.75rem;
@@ -216,7 +218,7 @@
       margin-top: 4px;
     }
 
-    /* BOTONES DE REPRODUCCIÓN MÁS GRANDES (AMBOS SKINS) */
+    /* BOTONES DE REPRODUCCIÓN */
     .controls {
       display: flex;
       align-items: center;
@@ -253,14 +255,14 @@
     .btn-sub { font-size: 1.15rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
 
-    /* SKIN MEOW MODERN CON PORTADA Y METADATOS MÁS GRANDES */
+    /* SKIN MEOW MODERN CON CENTRADO BALANCEADO Y TIPOGRAFÍA GRANDE */
     .app-container.collapsed.skin-modern {
       max-width: 920px;
     }
 
     .app-container.collapsed.skin-modern .player-section {
       display: grid;
-      grid-template-columns: 250px 1fr;
+      grid-template-columns: 240px 1fr;
       grid-template-rows: auto 1fr auto auto;
       grid-template-areas:
         "header header"
@@ -268,8 +270,12 @@
         "progress progress"
         "controls controls";
       align-items: center;
+      justify-content: center;
       gap: 16px;
-      max-width: 100%;
+      max-width: 840px;
+      margin: 0 auto;
+      padding-left: 10px;
+      padding-right: 10px;
     }
 
     .app-container.collapsed.skin-modern .player-header-title {
@@ -279,7 +285,7 @@
 
     .app-container.collapsed.skin-modern .cover-container {
       grid-area: cover;
-      justify-content: flex-start;
+      justify-content: center;
       margin: 0;
     }
 
@@ -299,7 +305,7 @@
       flex-direction: column;
       justify-content: center;
       gap: 8px;
-      padding-left: 12px;
+      padding-left: 28px;
       overflow: hidden;
     }
 

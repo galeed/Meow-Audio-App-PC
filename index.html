@@ -61,7 +61,7 @@
       padding: 20px;
       position: relative;
       overflow: hidden;
-      transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.4s ease;
     }
 
     /* ESTADO COLAPSADO: Oculta la columna central y expande el reproductor */
@@ -79,15 +79,11 @@
     .app-container.collapsed .player-section {
       border-right: none;
       padding-right: 20px;
-      max-width: 440px;
       margin: 0 auto;
+      width: 100%;
     }
 
-    .app-container.collapsed .cover-art {
-      max-width: 260px;
-    }
-
-    /* Título principal visible solo al colapsar dentro del reproductor */
+    /* Título principal visible solo al colapsar */
     .player-header-title {
       display: none;
       font-size: 1.15rem;
@@ -103,7 +99,7 @@
       display: block;
     }
 
-    /* SECCIÓN REPRODUCTOR */
+    /* SECCIÓN REPRODUCTOR (SKIN CLASSIC DEFAULT) */
     .player-section {
       display: flex;
       flex-direction: column;
@@ -132,7 +128,7 @@
       border-radius: 16px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.22);
-      transition: transform 0.3s ease, max-width 0.4s ease;
+      transition: transform 0.3s ease, max-width 0.4s ease, width 0.4s ease;
     }
 
     .cover-art:hover { transform: scale(1.02); }
@@ -254,6 +250,79 @@
 
     .btn-sub { font-size: 1rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
+
+    /* ESTILOS ESPECÍFICOS PARA SKIN MEOW MODERN EN MODO COLAPSADO */
+    .app-container.collapsed.skin-modern {
+      max-width: 820px; /* Ancho expandido para el diseño horizontal */
+    }
+
+    .app-container.collapsed.skin-modern .player-section {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      grid-template-rows: auto 1fr auto auto;
+      grid-template-areas:
+        "header header"
+        "info cover"
+        "specs specs"
+        "controls controls";
+      align-items: center;
+      gap: 15px;
+      max-width: 100%;
+    }
+
+    .app-container.collapsed.skin-modern .player-header-title {
+      grid-area: header;
+      margin-bottom: 0;
+    }
+
+    .app-container.collapsed.skin-modern .cover-container {
+      grid-area: cover;
+      justify-content: flex-end;
+    }
+
+    .app-container.collapsed.skin-modern .cover-art {
+      max-width: 260px;
+      width: 100%;
+    }
+
+    .app-container.collapsed.skin-modern .track-info {
+      grid-area: info;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 10px;
+    }
+
+    .app-container.collapsed.skin-modern .track-title {
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+
+    .app-container.collapsed.skin-modern .track-artist {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .app-container.collapsed.skin-modern .track-album {
+      font-size: 0.95rem;
+    }
+
+    .app-container.collapsed.skin-modern .audio-specs-badge {
+      grid-area: specs;
+      justify-content: flex-start;
+      padding-left: 10px;
+    }
+
+    .app-container.collapsed.skin-modern .progress-container {
+      grid-column: 1 / -1;
+    }
+
+    .app-container.collapsed.skin-modern .controls {
+      grid-column: 1 / -1;
+      justify-content: center;
+      gap: 25px;
+    }
 
     /* SECCIÓN CENTRAL Y DERECHA: CONTENIDO DINÁMICO DE PESTAÑAS */
     .content-section {
@@ -571,7 +640,7 @@
 
   <div class="app-container" id="appContainer">
     <!-- SECCIÓN IZQUIERDA: REPRODUCTOR -->
-    <div class="player-section">
+    <div class="player-section" id="playerSection">
       <div class="player-header-title">Meow Audio App PC 🐈</div>
       
       <div class="cover-container">
@@ -613,6 +682,15 @@
       <div class="tab-pane" id="paneSettings">
         <div class="pane-header">Configuración</div>
         <div class="settings-group">
+          <!-- Opción Skins -->
+          <div class="control-box">
+            <span class="control-label">Skins (Modo colapsado)</span>
+            <select id="skinSelect" class="eq-select">
+              <option value="classic">Meow Classic</option>
+              <option value="modern">Meow Modern</option>
+            </select>
+          </div>
+
           <div class="control-box">
             <span class="control-label">Ecualizador Preset</span>
             <select id="eqSelect" class="eq-select">
@@ -708,6 +786,7 @@
     const fileInput = document.getElementById('fileInput');
 
     const eqSelect = document.getElementById('eqSelect');
+    const skinSelect = document.getElementById('skinSelect');
     const dolbyToggle = document.getElementById('dolbyToggle');
 
     const seekBar = document.getElementById('seekBar');
@@ -753,6 +832,16 @@
       rock:         [5, 4, 3, 1, -1, -1, 1, 3, 4, 5]
     };
 
+    // Control de Skins / Vistas
+    skinSelect.addEventListener('change', (e) => {
+      const selectedSkin = e.target.value;
+      if (selectedSkin === 'modern') {
+        appContainer.classList.add('skin-modern');
+      } else {
+        appContainer.classList.remove('skin-modern');
+      }
+    });
+
     // Control de Pantalla Completa
     btnFullscreen.addEventListener('click', () => {
       if (!document.fullscreenElement) {
@@ -783,7 +872,7 @@
 
     btnTabSettings.addEventListener('click', () => switchTab(btnTabSettings, paneSettings));
     
-    // El botón ☰ alterna mostrar/ocultar si ya está en la pestaña de cola, o cambia a ella
+    // El botón ☰ alterna mostrar/ocultar la lista
     btnTabQueue.addEventListener('click', () => {
       if (paneQueue.classList.contains('active')) {
         appContainer.classList.toggle('collapsed');

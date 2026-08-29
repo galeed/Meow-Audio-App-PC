@@ -127,7 +127,7 @@
       border-radius: 16px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.22);
-      transition: transform 0.3s ease, max-width 0.4s ease, width 0.4s ease;
+      transition: transform 0.3s ease, max-width 0.4s ease, width 0.4s ease, height 0.4s ease;
     }
 
     .cover-art:hover { transform: scale(1.02); }
@@ -216,6 +216,7 @@
       margin-top: 4px;
     }
 
+    /* BOTONES DE REPRODUCCIÓN MÁS GRANDES (AMBOS SKINS) */
     .controls {
       display: flex;
       align-items: center;
@@ -227,9 +228,9 @@
       background: none;
       border: none;
       color: var(--text);
-      font-size: 1.2rem;
+      font-size: 1.45rem;
       cursor: pointer;
-      padding: 6px;
+      padding: 8px;
       transition: transform 0.1s, opacity 0.2s;
     }
 
@@ -239,26 +240,27 @@
     .btn-play {
       background: var(--text);
       color: #121216;
-      width: 44px;
-      height: 44px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.45rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
     }
 
-    .btn-sub { font-size: 1rem; opacity: 0.5; }
+    .btn-sub { font-size: 1.15rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
 
-    /* REDISEÑO SKIN MEOW MODERN EN MODO COLAPSADO */
+    /* SKIN MEOW MODERN CON PORTADA Y METADATOS MÁS GRANDES */
     .app-container.collapsed.skin-modern {
-      max-width: 860px;
+      max-width: 920px;
     }
 
     .app-container.collapsed.skin-modern .player-section {
       display: grid;
-      grid-template-columns: 200px 1fr;
+      grid-template-columns: 250px 1fr;
       grid-template-rows: auto 1fr auto auto;
       grid-template-areas:
         "header header"
@@ -282,49 +284,50 @@
     }
 
     .app-container.collapsed.skin-modern .cover-art {
-      width: 190px;
-      height: 190px;
-      max-width: 190px;
+      width: 240px;
+      height: 240px;
+      max-width: 240px;
       aspect-ratio: 1 / 1;
       object-fit: cover;
-      border-radius: 16px;
+      border-radius: 18px;
     }
 
-    /* METADATOS A LA DERECHA DE LA PORTADA CON FORMATO INTEGRADO */
     .app-container.collapsed.skin-modern .track-info {
       grid-area: info;
       text-align: left;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 6px;
-      padding-left: 10px;
+      gap: 8px;
+      padding-left: 12px;
       overflow: hidden;
     }
 
     .app-container.collapsed.skin-modern .track-title {
-      font-size: 1.55rem;
+      font-size: 1.9rem;
       font-weight: 700;
       margin-bottom: 2px;
     }
 
     .app-container.collapsed.skin-modern .track-artist {
-      font-size: 1.15rem;
+      font-size: 1.35rem;
       color: var(--text-muted);
       margin-bottom: 2px;
     }
 
     .app-container.collapsed.skin-modern .track-album {
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: var(--text-muted);
       opacity: 0.85;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .app-container.collapsed.skin-modern .audio-specs-badge {
       justify-content: flex-start;
-      font-size: 0.85rem;
+      font-size: 1.05rem;
     }
+
+    .app-container.collapsed.skin-modern .hires-icon { height: 20px; }
 
     .app-container.collapsed.skin-modern .progress-container {
       grid-area: progress;
@@ -334,7 +337,7 @@
     .app-container.collapsed.skin-modern .controls {
       grid-area: controls;
       justify-content: center;
-      gap: 30px;
+      gap: 36px;
     }
 
     /* SECCIÓN CENTRAL Y DERECHA: CONTENIDO DINÁMICO DE PESTAÑAS */

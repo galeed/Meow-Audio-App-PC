@@ -61,9 +61,49 @@
       padding: 20px;
       position: relative;
       overflow: hidden;
+      transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* SECCIÓN IZQUIERDA: REPRODUCTOR */
+    /* ESTADO COLAPSADO: Oculta la columna central y expande el reproductor */
+    .app-container.collapsed {
+      grid-template-columns: 1fr 0px 64px;
+      max-width: 580px;
+    }
+
+    .app-container.collapsed .content-section {
+      opacity: 0;
+      padding: 0;
+      pointer-events: none;
+    }
+
+    .app-container.collapsed .player-section {
+      border-right: none;
+      padding-right: 20px;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .app-container.collapsed .cover-art {
+      max-width: 260px;
+    }
+
+    /* Título principal visible solo al colapsar dentro del reproductor */
+    .player-header-title {
+      display: none;
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .app-container.collapsed .player-header-title {
+      display: block;
+    }
+
+    /* SECCIÓN REPRODUCTOR */
     .player-section {
       display: flex;
       flex-direction: column;
@@ -72,6 +112,7 @@
       padding-right: 20px;
       height: 100%;
       overflow: hidden;
+      transition: all 0.4s ease;
     }
 
     .cover-container {
@@ -79,7 +120,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 8px 0;
+      margin: 4px 0;
     }
 
     .cover-art {
@@ -91,7 +132,7 @@
       border-radius: 16px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.22);
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, max-width 0.4s ease;
     }
 
     .cover-art:hover { transform: scale(1.02); }
@@ -221,9 +262,9 @@
       flex-direction: column;
       height: 100%;
       overflow: hidden;
+      transition: opacity 0.3s ease;
     }
 
-    /* Título Centrado en la Columna Derecha */
     .app-title-main {
       font-size: 1.15rem;
       font-weight: 700;
@@ -528,9 +569,11 @@
 
   <div class="bg-blur" id="bgBlur"></div>
 
-  <div class="app-container">
+  <div class="app-container" id="appContainer">
     <!-- SECCIÓN IZQUIERDA: REPRODUCTOR -->
     <div class="player-section">
+      <div class="player-header-title">Meow Audio App PC 🐈</div>
+      
       <div class="cover-container">
         <img class="cover-art" id="cover" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5'><path d='M9 18V5l12-2v13'/><circle cx='6' cy='18' r='3'/><circle cx='18' cy='16' r='3'/></svg>" alt="Cover">
       </div>
@@ -629,8 +672,8 @@
         <!-- 2. Botón Configuración -->
         <button class="sidebar-btn" id="btnTabSettings" title="Configuración">⚙️</button>
 
-        <!-- 3. Botón Cola de Reproducción -->
-        <button class="sidebar-btn active" id="btnTabQueue" title="Cola de reproducción">☰</button>
+        <!-- 3. Botón Cola de Reproducción (Muestra / Oculta el panel derecho) -->
+        <button class="sidebar-btn active" id="btnTabQueue" title="Mostrar/Ocultar lista de canciones">☰</button>
 
         <!-- 4. Botón Búsqueda -->
         <button class="sidebar-btn" id="btnTabSearch" title="Buscar">🔍</button>
@@ -649,6 +692,7 @@
 
     const audio = document.getElementById('audio');
     const bgBlur = document.getElementById('bgBlur');
+    const appContainer = document.getElementById('appContainer');
     const btnPlay = document.getElementById('btnPlay');
     const btnPrev = document.getElementById('btnPrev');
     const btnNext = document.getElementById('btnNext');
@@ -724,8 +768,12 @@
       }
     });
 
-    // Navegación Pestañas
+    // Navegación Pestañas & Colapso
     function switchTab(activeBtn, activePane) {
+      if (appContainer.classList.contains('collapsed')) {
+        appContainer.classList.remove('collapsed');
+      }
+      
       [btnTabSettings, btnTabQueue, btnTabSearch].forEach(b => b.classList.remove('active'));
       [paneSettings, paneQueue, paneSearch].forEach(p => p.classList.remove('active'));
       
@@ -734,7 +782,17 @@
     }
 
     btnTabSettings.addEventListener('click', () => switchTab(btnTabSettings, paneSettings));
-    btnTabQueue.addEventListener('click', () => switchTab(btnTabQueue, paneQueue));
+    
+    // El botón ☰ alterna mostrar/ocultar si ya está en la pestaña de cola, o cambia a ella
+    btnTabQueue.addEventListener('click', () => {
+      if (paneQueue.classList.contains('active')) {
+        appContainer.classList.toggle('collapsed');
+        btnTabQueue.classList.toggle('active', !appContainer.classList.contains('collapsed'));
+      } else {
+        switchTab(btnTabQueue, paneQueue);
+      }
+    });
+
     btnTabSearch.addEventListener('click', () => {
       switchTab(btnTabSearch, paneSearch);
       renderSearchUI();
@@ -967,7 +1025,7 @@
       if (ext === 'flac') {
         let flacPos = -1;
         for (let i = 0; i < uint8.length - 4; i++) {
-          if (uint8[i] === 0x66 && uint8[i+1] === 0x4C && uint8[i+2] === 0x61 && uint8[i+3] === 0x43) {
+          if (uint8[i] === 0x66 && uint8[i+1] === 0x6C && uint8[i+2] === 0x61 && uint8[i+3] === 0x43) {
             flacPos = i; break;
           }
         }

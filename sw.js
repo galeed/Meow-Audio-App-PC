@@ -1,3 +1,13 @@
+// Configuración de Supabase
+const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+const SUPABASE_KEY = 'TU-ANON-PUBLIC-KEY';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Función auxiliar para generar un código único de 6 dígitos
+function generateTransferCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 self.addEventListener('fetch', (event) => {
   // Evitar que el Service Worker interfiera con blobs locales de música o peticiones parciales de audio
   if (event.request.url.startsWith('blob:') || event.request.headers.get('range')) {

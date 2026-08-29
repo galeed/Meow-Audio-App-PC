@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meow Audio App - PC Edition</title>
+  <title>Meow Audio App - PC Edition Pro</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
     :root {
@@ -44,12 +44,12 @@
       z-index: -1;
     }
 
-    /* CONTENEDOR PRINCIPAL HORIZONTAL (DESKTOP) */
+    /* CONTENEDOR PRINCIPAL REAJUSTADO PARA ESCRITORIO */
     .app-container {
-      width: 90%;
-      max-width: 1100px;
-      height: 85vh;
-      max-height: 750px;
+      width: 92%;
+      max-width: 1150px;
+      height: 88vh;
+      max-height: 800px;
       background: var(--card-bg);
       backdrop-filter: blur(30px) saturate(160%);
       -webkit-backdrop-filter: blur(30px) saturate(160%);
@@ -57,24 +57,27 @@
       border: 1px solid var(--card-border);
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
       display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 24px;
-      padding: 24px;
+      /* Columna izquierda con peso principal (420px) y lista de reproducción más angosta (1fr) */
+      grid-template-columns: 420px 320px;
+      justify-content: center;
+      gap: 32px;
+      padding: 28px;
       position: relative;
       overflow: hidden;
     }
 
-    /* SECCIÓN IZQUIERDA: REPRODUCTOR */
+    /* SECCIÓN IZQUIERDA: REPRODUCTOR PRINCIPAL */
     .player-section {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
-      padding-right: 24px;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      padding-right: 32px;
+      height: 100%;
     }
 
     .header-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.5px;
@@ -82,35 +85,42 @@
       text-align: center;
     }
 
+    /* PORTADA MÁS GRANDE */
     .cover-container {
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 12px 0;
-      position: relative;
+      margin: 10px 0;
     }
 
     .cover-art {
-      width: 240px;
-      height: 240px;
-      background: rgba(255, 255, 255, 0.1);
+      width: 320px;
+      height: 320px;
+      background: rgba(255, 255, 255, 0.08);
       object-fit: cover;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      transition: transform 0.3s ease;
+    }
+
+    .cover-art:hover {
+      transform: scale(1.02);
     }
 
     .track-info {
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
     .track-title {
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-bottom: 2px;
     }
 
     .track-artist {
@@ -122,9 +132,9 @@
     }
 
     .track-album {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
-      opacity: 0.8;
+      opacity: 0.75;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -135,7 +145,7 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: var(--audio-spec-color);
       text-transform: uppercase;
@@ -156,7 +166,7 @@
 
     .controls-row {
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
 
     .control-box {
@@ -164,7 +174,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.25);
       border: 1px solid rgba(255, 255, 255, 0.15);
       padding: 6px 12px;
       border-radius: 10px;
@@ -227,7 +237,7 @@
       width: 100%;
       -webkit-appearance: none;
       appearance: none;
-      height: 6px;
+      height: 5px;
       border-radius: 3px;
       background: rgba(255, 255, 255, 0.25);
       outline: none;
@@ -237,8 +247,8 @@
     .seek-bar::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       background: var(--text);
       cursor: pointer;
@@ -256,14 +266,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
+      padding: 0 12px;
     }
 
     .btn {
       background: none;
       border: none;
       color: var(--text);
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       cursor: pointer;
       padding: 6px;
       transition: transform 0.1s, opacity 0.2s;
@@ -275,30 +285,30 @@
     .btn-play {
       background: var(--text);
       color: #121216;
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
     }
 
-    .btn-sub { font-size: 1.1rem; opacity: 0.5; }
+    .btn-sub { font-size: 1.05rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
 
     .file-input-wrapper {
       position: relative;
       width: 100%;
-      height: 40px;
+      height: 38px;
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       cursor: pointer;
       transition: background 0.2s;
     }
 
-    .file-input-wrapper:hover { background: rgba(255, 255, 255, 0.25); }
+    .file-input-wrapper:hover { background: rgba(255, 255, 255, 0.22); }
 
     .file-input-btn {
       width: 100%;
@@ -306,7 +316,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       pointer-events: none;
     }
@@ -318,55 +328,67 @@
       cursor: pointer;
     }
 
-    /* SECCIÓN DERECHA: QUEUE Y BÚSQUEDA (PERMANENTE EN PC) */
+    /* SECCIÓN DERECHA: QUEUE / BIBLIOTECA (MÁS ANGOSTA) */
     .queue-section {
       display: flex;
       flex-direction: column;
       height: 100%;
+      width: 100%;
     }
 
     .queue-header {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       padding-bottom: 8px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
     }
 
     .playlist-tools {
       display: flex;
-      gap: 12px;
+      flex-direction: column;
+      gap: 8px;
       margin-bottom: 12px;
     }
 
     .search-input {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      width: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       padding: 8px 12px;
       border-radius: 8px;
       color: var(--text);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       outline: none;
     }
 
     .sort-bar {
       display: flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 0 10px;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 6px 10px;
       border-radius: 8px;
+    }
+
+    .sort-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
     }
 
     .sort-select {
       background: transparent;
       color: var(--text);
       border: none;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       outline: none;
       cursor: pointer;
+      font-weight: 600;
     }
 
     .sort-select option { background: #1c1c24; }
@@ -375,11 +397,10 @@
       list-style: none;
       overflow-y: auto;
       flex: 1;
-      padding-right: 6px;
+      padding-right: 4px;
     }
 
-    /* Scrollbar personalizada para PC */
-    .playlist-list::-webkit-scrollbar { width: 6px; }
+    .playlist-list::-webkit-scrollbar { width: 5px; }
     .playlist-list::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.2);
       border-radius: 3px;
@@ -389,7 +410,7 @@
     }
 
     .playlist-item {
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 8px;
       margin-bottom: 6px;
       cursor: pointer;
@@ -406,18 +427,31 @@
     }
 
     .playlist-item.playing {
-      background: rgba(255, 71, 87, 0.25);
-      border-color: rgba(255, 71, 87, 0.5);
+      background: rgba(255, 71, 87, 0.22);
+      border-color: rgba(255, 71, 87, 0.45);
+    }
+
+    .playlist-item-info {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding-right: 6px;
     }
 
     .playlist-item-title {
-      font-size: 0.88rem;
+      font-size: 0.83rem;
       font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .playlist-item-artist {
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* AVISO GATUNO */
@@ -465,7 +499,7 @@
   <div class="bg-blur" id="bgBlur"></div>
 
   <div class="app-container">
-    <!-- SECCIÓN IZQUIERDA: PANEL DE CONTROL -->
+    <!-- SECCIÓN IZQUIERDA: PANEL DE CONTROL Y REPRODUCTOR -->
     <div class="player-section">
       <div class="header-title">Meow Audio App PC 🐈</div>
 
@@ -534,8 +568,9 @@
       <div class="playlist-tools">
         <input type="text" id="searchInput" class="search-input" placeholder="Buscar título, artista o álbum...">
         <div class="sort-bar">
+          <span class="sort-label">Orden:</span>
           <select id="sortSelect" class="sort-select">
-            <option value="default">Orden original</option>
+            <option value="default">Original</option>
             <option value="title">Título</option>
             <option value="artist">Artista</option>
             <option value="album">Álbum</option>
@@ -703,7 +738,7 @@
       });
 
       if (filteredTracks.length === 0) {
-        playlistContainer.innerHTML = '<li style="color:var(--text-muted); font-size:0.85rem; padding:12px; text-align:center;">No hay canciones encontradas</li>';
+        playlistContainer.innerHTML = '<li style="color:var(--text-muted); font-size:0.82rem; padding:12px; text-align:center;">Sin resultados</li>';
         return;
       }
 
@@ -711,11 +746,11 @@
         const li = document.createElement('li');
         li.className = `playlist-item ${originalIndex === currentIndex ? 'playing' : ''}`;
         li.innerHTML = `
-          <div>
+          <div class="playlist-item-info">
             <div class="playlist-item-title">${track.title || track.filename}</div>
             <div class="playlist-item-artist">${track.artist} ${track.album ? '• ' + track.album : ''}</div>
           </div>
-          ${originalIndex === currentIndex ? '<span style="color:var(--accent); font-size:0.85rem;">▶</span>' : ''}
+          ${originalIndex === currentIndex ? '<span style="color:var(--accent); font-size:0.8rem;">▶</span>' : ''}
         `;
         li.addEventListener('click', () => {
           currentIndex = originalIndex;

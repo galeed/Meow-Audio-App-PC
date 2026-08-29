@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meow Audio App - Sidebar Navigation Edition</title>
+  <title>Meow Audio App PC</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
     :root {
@@ -45,10 +45,10 @@
     }
 
     .app-container {
-      width: 92%;
+      width: 94%;
       max-width: 1100px;
-      height: 88vh;
-      max-height: 780px;
+      height: 90vh;
+      max-height: 720px;
       background: var(--card-bg);
       backdrop-filter: blur(30px) saturate(160%);
       -webkit-backdrop-filter: blur(30px) saturate(160%);
@@ -56,9 +56,9 @@
       border: 1px solid var(--card-border);
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
       display: grid;
-      grid-template-columns: 420px 1fr 64px;
+      grid-template-columns: 380px 1fr 64px;
       gap: 0;
-      padding: 24px;
+      padding: 20px;
       position: relative;
       overflow: hidden;
     }
@@ -69,24 +69,9 @@
       flex-direction: column;
       justify-content: space-between;
       border-right: 1px solid rgba(255, 255, 255, 0.12);
-      padding-right: 28px;
+      padding-right: 20px;
       height: 100%;
       overflow: hidden;
-    }
-
-    .player-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
-
-    .header-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-muted);
     }
 
     .cover-container {
@@ -94,17 +79,17 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 12px 0;
+      margin: 8px 0;
     }
 
     .cover-art {
-      width: 280px;
-      height: 280px;
+      width: 100%;
+      max-width: 230px;
       aspect-ratio: 1 / 1;
       background: rgba(255, 255, 255, 0.08);
       object-fit: cover;
       border-radius: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.22);
       transition: transform 0.3s ease;
     }
@@ -113,11 +98,11 @@
 
     .track-info {
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .track-title {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
@@ -126,7 +111,7 @@
     }
 
     .track-artist {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--text-muted);
       white-space: nowrap;
       overflow: hidden;
@@ -134,7 +119,7 @@
     }
 
     .track-album {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       opacity: 0.75;
       white-space: nowrap;
@@ -147,14 +132,14 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--audio-spec-color);
       text-transform: uppercase;
-      min-height: 20px;
+      min-height: 18px;
     }
 
-    .hires-icon { height: 16px; width: auto; }
+    .hires-icon { height: 15px; width: auto; }
 
     .status-badge {
       font-size: 0.75rem;
@@ -198,14 +183,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
+      padding: 0 8px;
     }
 
     .btn {
       background: none;
       border: none;
       color: var(--text);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       cursor: pointer;
       padding: 6px;
       transition: transform 0.1s, opacity 0.2s;
@@ -217,25 +202,39 @@
     .btn-play {
       background: var(--text);
       color: #121216;
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
-    .btn-sub { font-size: 1.05rem; opacity: 0.5; }
+    .btn-sub { font-size: 1rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
 
-    /* SECCIÓN CENTRAL: CONTENIDO DINÁMICO DE PESTAÑAS */
+    /* SECCIÓN CENTRAL Y DERECHA: CONTENIDO DINÁMICO DE PESTAÑAS */
     .content-section {
-      padding: 0 24px;
+      padding: 0 20px;
       display: flex;
       flex-direction: column;
       height: 100%;
       overflow: hidden;
+    }
+
+    /* Título Centrado en la Columna Derecha */
+    .app-title-main {
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text);
+      text-align: center;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
     }
 
     .tab-pane {
@@ -251,14 +250,12 @@
     }
 
     .pane-header {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--text-muted);
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 12px;
       flex-shrink: 0;
     }
 
@@ -266,7 +263,7 @@
     .settings-group {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .control-box {
@@ -275,7 +272,7 @@
       justify-content: space-between;
       background: rgba(0, 0, 0, 0.25);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 14px 16px;
+      padding: 12px 16px;
       border-radius: 12px;
     }
 
@@ -338,7 +335,7 @@
       border: 1px solid rgba(255, 255, 255, 0.18);
       padding: 8px 12px;
       border-radius: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       flex-shrink: 0;
     }
 
@@ -365,7 +362,7 @@
       color: var(--text);
       font-size: 0.88rem;
       outline: none;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       flex-shrink: 0;
     }
 
@@ -385,7 +382,7 @@
     }
 
     .playlist-item {
-      padding: 10px 14px;
+      padding: 9px 12px;
       border-radius: 10px;
       margin-bottom: 6px;
       cursor: pointer;
@@ -434,14 +431,23 @@
       text-align: center;
     }
 
-    /* SECCIÓN DERECHA: BARRA LATERAL DE ICONOS */
+    /* SECCIÓN DERECHA EXTREMA: BARRA LATERAL DE ICONOS */
     .sidebar-section {
       border-left: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
-      padding-left: 16px;
+      justify-content: space-between;
+      padding-left: 12px;
+      height: 100%;
+    }
+
+    .sidebar-top-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
     }
 
     .sidebar-btn {
@@ -525,10 +531,6 @@
   <div class="app-container">
     <!-- SECCIÓN IZQUIERDA: REPRODUCTOR -->
     <div class="player-section">
-      <div class="player-header">
-        <div class="header-title">Meow Audio App PC 🐈</div>
-      </div>
-
       <div class="cover-container">
         <img class="cover-art" id="cover" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5'><path d='M9 18V5l12-2v13'/><circle cx='6' cy='18' r='3'/><circle cx='18' cy='16' r='3'/></svg>" alt="Cover">
       </div>
@@ -561,6 +563,8 @@
 
     <!-- SECCIÓN CENTRAL: VISTAS Y PESTAÑAS -->
     <div class="content-section">
+      <!-- Título Centrado en Columna Derecha -->
+      <h1 class="app-title-main">Meow Audio App PC 🐈</h1>
       
       <!-- Pestaña 1: Configuración -->
       <div class="tab-pane" id="paneSettings">
@@ -613,22 +617,27 @@
 
     </div>
 
-    <!-- SECCIÓN DERECHA: BARRA LATERAL (BOTONES) -->
+    <!-- SECCIÓN DERECHA EXTREMA: BARRA LATERAL (BOTONES) -->
     <div class="sidebar-section">
-      <!-- 1. Botón Añadir -->
-      <div class="sidebar-btn" title="Añadir canciones">
-        ➕
-        <input type="file" id="fileInput" class="sidebar-file-input" multiple accept=".mp3,.wav,.ogg,.flac,.m4a,.aac,audio/*">
+      <div class="sidebar-top-group">
+        <!-- 1. Botón Añadir -->
+        <div class="sidebar-btn" title="Añadir canciones">
+          ➕
+          <input type="file" id="fileInput" class="sidebar-file-input" multiple accept=".mp3,.wav,.ogg,.flac,.m4a,.aac,audio/*">
+        </div>
+
+        <!-- 2. Botón Configuración -->
+        <button class="sidebar-btn" id="btnTabSettings" title="Configuración">⚙️</button>
+
+        <!-- 3. Botón Cola de Reproducción -->
+        <button class="sidebar-btn active" id="btnTabQueue" title="Cola de reproducción">☰</button>
+
+        <!-- 4. Botón Búsqueda -->
+        <button class="sidebar-btn" id="btnTabSearch" title="Buscar">🔍</button>
       </div>
 
-      <!-- 2. Botón Configuración -->
-      <button class="sidebar-btn" id="btnTabSettings" title="Configuración">⚙️</button>
-
-      <!-- 3. Botón Cola de Reproducción -->
-      <button class="sidebar-btn active" id="btnTabQueue" title="Cola de reproducción">☰</button>
-
-      <!-- 4. Botón Búsqueda -->
-      <button class="sidebar-btn" id="btnTabSearch" title="Buscar">🔍</button>
+      <!-- 5. Botón Pantalla Completa en Esquina Inferior Derecha -->
+      <button class="sidebar-btn" id="btnFullscreen" title="Pantalla completa">⛶</button>
     </div>
   </div>
 
@@ -669,6 +678,7 @@
     const btnTabSettings = document.getElementById('btnTabSettings');
     const btnTabQueue = document.getElementById('btnTabQueue');
     const btnTabSearch = document.getElementById('btnTabSearch');
+    const btnFullscreen = document.getElementById('btnFullscreen');
 
     const paneSettings = document.getElementById('paneSettings');
     const paneQueue = document.getElementById('paneQueue');
@@ -699,6 +709,21 @@
       rock:         [5, 4, 3, 1, -1, -1, 1, 3, 4, 5]
     };
 
+    // Control de Pantalla Completa
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+          console.error(`Error al intentar activar pantalla completa: ${err.message}`);
+        });
+        btnFullscreen.textContent = '🗗';
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+          btnFullscreen.textContent = '⛶';
+        }
+      }
+    });
+
     // Navegación Pestañas
     function switchTab(activeBtn, activePane) {
       [btnTabSettings, btnTabQueue, btnTabSearch].forEach(b => b.classList.remove('active'));
@@ -712,7 +737,7 @@
     btnTabQueue.addEventListener('click', () => switchTab(btnTabQueue, paneQueue));
     btnTabSearch.addEventListener('click', () => {
       switchTab(btnTabSearch, paneSearch);
-      renderSearchUI(); // Actualizar interfaz de búsqueda al presionar icono
+      renderSearchUI();
     });
 
     function initWebAudio() {
@@ -827,7 +852,7 @@
       });
     }
 
-    // Render Buscador (Solo muestra canciones cuando comienza a escribir)
+    // Render Buscador
     function renderSearchUI() {
       searchContainer.innerHTML = '';
       const query = searchInput.value.toLowerCase().trim();

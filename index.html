@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meow Audio App - PC Edition Pro</title>
+  <title>Meow Audio App - PC Edition Pro Fixed</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
     :root {
@@ -44,7 +44,7 @@
       z-index: -1;
     }
 
-    /* CONTENEDOR PRINCIPAL REAJUSTADO PARA ESCRITORIO */
+    /* CONTENEDOR PRINCIPAL CON ALTURA FIJA Y OVERFLOW HIDDEN */
     .app-container {
       width: 92%;
       max-width: 1150px;
@@ -57,16 +57,15 @@
       border: 1px solid var(--card-border);
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
       display: grid;
-      /* Columna izquierda con peso principal (420px) y lista de reproducción más angosta (1fr) */
       grid-template-columns: 420px 320px;
       justify-content: center;
       gap: 32px;
       padding: 28px;
       position: relative;
-      overflow: hidden;
+      overflow: hidden; /* Evita que el contenedor entero crezca */
     }
 
-    /* SECCIÓN IZQUIERDA: REPRODUCTOR PRINCIPAL */
+    /* SECCIÓN IZQUIERDA: REPRODUCTOR TOTALMENTE FIJO */
     .player-section {
       display: flex;
       flex-direction: column;
@@ -74,6 +73,7 @@
       border-right: 1px solid rgba(255, 255, 255, 0.12);
       padding-right: 32px;
       height: 100%;
+      overflow: hidden; /* Garantiza que la parte izquierda no se mueva */
     }
 
     .header-title {
@@ -85,7 +85,6 @@
       text-align: center;
     }
 
-    /* PORTADA MÁS GRANDE */
     .cover-container {
       width: 100%;
       display: flex;
@@ -328,12 +327,13 @@
       cursor: pointer;
     }
 
-    /* SECCIÓN DERECHA: QUEUE / BIBLIOTECA (MÁS ANGOSTA) */
+    /* SECCIÓN DERECHA: QUEUE CON SCROLL INTERNO INDEPENDIENTE */
     .queue-section {
       display: flex;
       flex-direction: column;
       height: 100%;
       width: 100%;
+      overflow: hidden; /* Evita desbordamientos */
     }
 
     .queue-header {
@@ -345,6 +345,7 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--text-muted);
+      flex-shrink: 0;
     }
 
     .playlist-tools {
@@ -352,6 +353,7 @@
       flex-direction: column;
       gap: 8px;
       margin-bottom: 12px;
+      flex-shrink: 0;
     }
 
     .search-input {
@@ -393,10 +395,12 @@
 
     .sort-select option { background: #1c1c24; }
 
+    /* LISTA CON SCROLL VERTICAL PROPIO */
     .playlist-list {
       list-style: none;
       overflow-y: auto;
-      flex: 1;
+      flex: 1; /* Ocupa exactamente el espacio restante */
+      min-height: 0; /* Necesario para que flexbox respete el overflow en CSS */
       padding-right: 4px;
     }
 
@@ -499,7 +503,7 @@
   <div class="bg-blur" id="bgBlur"></div>
 
   <div class="app-container">
-    <!-- SECCIÓN IZQUIERDA: PANEL DE CONTROL Y REPRODUCTOR -->
+    <!-- SECCIÓN IZQUIERDA: PANEL FIJO -->
     <div class="player-section">
       <div class="header-title">Meow Audio App PC 🐈</div>
 
@@ -561,7 +565,7 @@
       </div>
     </div>
 
-    <!-- SECCIÓN DERECHA: QUEUE / BIBLIOTECA -->
+    <!-- SECCIÓN DERECHA: QUEUE CON SCROLL INTERNO -->
     <div class="queue-section">
       <div class="queue-header">Cola de reproducción</div>
       

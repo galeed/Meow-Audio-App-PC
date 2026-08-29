@@ -133,7 +133,6 @@
 
     .cover-art:hover { transform: scale(1.02); }
 
-    /* CANVAS VISUALIZADOR DE AUDIO */
     .visualizer-canvas {
       position: absolute;
       top: 0;
@@ -404,13 +403,13 @@
       flex-shrink: 0;
     }
 
-    /* CONFIGURACIÓN Y TEMAS NEÓN */
+    /* CONFIGURACIÓN Y AUDIO AVANZADO */
     .settings-group {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       overflow-y: auto;
-      padding-right: 4px;
+      padding-right: 6px;
     }
 
     .settings-group::-webkit-scrollbar { width: 4px; }
@@ -418,12 +417,19 @@
 
     .control-box {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 8px;
       background: rgba(0, 0, 0, 0.25);
       border: 1px solid rgba(255, 255, 255, 0.12);
       padding: 10px 14px;
       border-radius: 12px;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
     }
 
     .control-label {
@@ -508,6 +514,79 @@
 
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(18px); }
+
+    /* CONTROLES DEL ECUALIZADOR 10 BANDAS */
+    .eq-bands-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 4px;
+      padding-top: 6px;
+      text-align: center;
+    }
+
+    .eq-band-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .eq-slider {
+      -webkit-appearance: slider-vertical;
+      writing-mode: bt-lr;
+      width: 12px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .eq-band-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .eq-band-val {
+      font-size: 0.65rem;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* LIMITADOR Y GAIN */
+    .limiter-slider-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 140px;
+    }
+
+    .limiter-slider {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.3);
+      outline: none;
+    }
+
+    .limiter-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    .limiter-val-label {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: bold;
+      min-width: 45px;
+      text-align: right;
+    }
 
     /* LISTA Y BÚSQUEDA */
     .sort-bar {
@@ -751,64 +830,97 @@
       
       <!-- Pestaña 1: Configuración -->
       <div class="tab-pane" id="paneSettings">
-        <div class="pane-header">Configuración</div>
+        <div class="pane-header">Configuración Avanzada</div>
         <div class="settings-group">
           
           <!-- Creador de Temas Neón -->
           <div class="control-box">
-            <span class="control-label">Color de Acento Neón</span>
-            <div class="neon-presets">
-              <div class="neon-swatch" style="background:#00f3ff;" onclick="setNeonAccent('#00f3ff')" title="Cyan Cyberpunk"></div>
-              <div class="neon-swatch" style="background:#ff4757;" onclick="setNeonAccent('#ff4757')" title="Rojo Neón"></div>
-              <div class="neon-swatch" style="background:#00ff66;" onclick="setNeonAccent('#00ff66')" title="Verde Matrix"></div>
-              <div class="neon-swatch" style="background:#ff007f;" onclick="setNeonAccent('#ff007f')" title="Rosa Synthwave"></div>
-              <div class="neon-swatch" style="background:#9b51e0;" onclick="setNeonAccent('#9b51e0')" title="Púrpura Eléctrico"></div>
-              <input type="color" id="accentColorPicker" class="color-picker-input" value="#00f3ff" title="Personalizado">
+            <div class="control-row">
+              <span class="control-label">Color de Acento Neón</span>
+              <div class="neon-presets">
+                <div class="neon-swatch" style="background:#00f3ff;" onclick="setNeonAccent('#00f3ff')" title="Cyan Cyberpunk"></div>
+                <div class="neon-swatch" style="background:#ff4757;" onclick="setNeonAccent('#ff4757')" title="Rojo Neón"></div>
+                <div class="neon-swatch" style="background:#00ff66;" onclick="setNeonAccent('#00ff66')" title="Verde Matrix"></div>
+                <div class="neon-swatch" style="background:#ff007f;" onclick="setNeonAccent('#ff007f')" title="Rosa Synthwave"></div>
+                <div class="neon-swatch" style="background:#9b51e0;" onclick="setNeonAccent('#9b51e0')" title="Púrpura Eléctrico"></div>
+                <input type="color" id="accentColorPicker" class="color-picker-input" value="#00f3ff" title="Personalizado">
+              </div>
             </div>
           </div>
 
-          <!-- Visualizador de Audio -->
+          <!-- Visualizador de Audio (Desactivado por defecto) -->
           <div class="control-box">
-            <span class="control-label">Visualizador de Audio</span>
-            <select id="visualizerSelect" class="eq-select">
-              <option value="bars">Barras Neón</option>
-              <option value="wave">Onda Sinusoidal</option>
-              <option value="circle">Espectro Circular</option>
-              <option value="off">Desactivado</option>
-            </select>
+            <div class="control-row">
+              <span class="control-label">Visualizador de Audio</span>
+              <select id="visualizerSelect" class="eq-select">
+                <option value="off" selected>Desactivado</option>
+                <option value="bars">Barras Neón</option>
+                <option value="wave">Onda Sinusoidal</option>
+                <option value="circle">Espectro Circular</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Normalización de Volumen y Limitador/Gain -->
+          <div class="control-box">
+            <div class="control-row">
+              <span class="control-label">Normalización de Volumen</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="normalizeToggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="control-row" style="margin-top: 4px;">
+              <span class="control-label">Limitador (Boost / Gain)</span>
+              <div class="limiter-slider-container">
+                <input type="range" id="limiterGainSlider" class="limiter-slider" min="-6" max="6" step="0.5" value="0">
+                <span class="limiter-val-label" id="limiterGainVal">0.0 dB</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ecualizador 10 Bandas Ajustable -->
+          <div class="control-box">
+            <div class="control-row">
+              <span class="control-label">Ecualizador de 10 Bandas</span>
+              <select id="eqSelect" class="eq-select">
+                <option value="custom">Personalizado</option>
+                <option value="flat" selected>Plano</option>
+                <option value="bassBoost">Bass Boost</option>
+                <option value="electronic">Electronic</option>
+                <option value="hiphop">Hip-Hop</option>
+                <option value="jazz">Jazz</option>
+                <option value="pop">Pop</option>
+                <option value="rock">Rock</option>
+              </select>
+            </div>
+            <div class="eq-bands-grid" id="eqBandsGrid">
+              <!-- Renderizado dinámico de los 10 deslizadores -->
+            </div>
           </div>
 
           <!-- Skins -->
           <div class="control-box">
-            <span class="control-label">Skins (Modo colapsado)</span>
-            <select id="skinSelect" class="eq-select">
-              <option value="classic">Meow Classic</option>
-              <option value="modern">Meow Modern</option>
-            </select>
-          </div>
-
-          <!-- Ecualizador -->
-          <div class="control-box">
-            <span class="control-label">Ecualizador Preset</span>
-            <select id="eqSelect" class="eq-select">
-              <option value="flat">Plano</option>
-              <option value="bassBoost">Bass Boost</option>
-              <option value="electronic">Electronic</option>
-              <option value="hiphop">Hip-Hop</option>
-              <option value="jazz">Jazz</option>
-              <option value="pop">Pop</option>
-              <option value="rock">Rock</option>
-            </select>
+            <div class="control-row">
+              <span class="control-label">Skins (Modo colapsado)</span>
+              <select id="skinSelect" class="eq-select">
+                <option value="classic">Meow Classic</option>
+                <option value="modern">Meow Modern</option>
+              </select>
+            </div>
           </div>
 
           <!-- Dolby Digital -->
           <div class="control-box">
-            <span class="control-label">Efecto Dolby Digital</span>
-            <label class="toggle-switch">
-              <input type="checkbox" id="dolbyToggle">
-              <span class="slider"></span>
-            </label>
+            <div class="control-row">
+              <span class="control-label">Efecto Dolby Digital</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="dolbyToggle">
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
+
         </div>
       </div>
 
@@ -877,8 +989,13 @@
     const fileInput = document.getElementById('fileInput');
 
     const eqSelect = document.getElementById('eqSelect');
+    const eqBandsGrid = document.getElementById('eqBandsGrid');
     const skinSelect = document.getElementById('skinSelect');
     const dolbyToggle = document.getElementById('dolbyToggle');
+    const normalizeToggle = document.getElementById('normalizeToggle');
+    const limiterGainSlider = document.getElementById('limiterGainSlider');
+    const limiterGainVal = document.getElementById('limiterGainVal');
+
     const accentColorPicker = document.getElementById('accentColorPicker');
     const visualizerSelect = document.getElementById('visualizerSelect');
 
@@ -917,9 +1034,14 @@
     let eqFilters = [];
     let dolbyFilter = null;
     let dolbyGain = null;
+    let masterGainNode = null;
+    let limiterCompressor = null;
     let animFrameId = null;
 
     const FREQUENCIES = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
+    const FREQ_LABELS = ['32Hz', '64Hz', '125Hz', '250Hz', '500Hz', '1kHz', '2kHz', '4kHz', '8kHz', '16kHz'];
+    let currentBandGains = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
     const EQ_PRESETS = {
       flat:         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       bassBoost:    [6, 5, 4, 2, 0, 0, 0, 0, 0, 0],
@@ -929,6 +1051,46 @@
       pop:          [-2, -1, 2, 4, 5, 4, 2, -1, -2, -2],
       rock:         [5, 4, 3, 1, -1, -1, 1, 3, 4, 5]
     };
+
+    function renderEQBandsUI() {
+      eqBandsGrid.innerHTML = '';
+      FREQUENCIES.forEach((freq, i) => {
+        const col = document.createElement('div');
+        col.className = 'eq-band-col';
+        col.innerHTML = `
+          <span class="eq-band-val" id="eqVal${i}">${currentBandGains[i] > 0 ? '+' : ''}${currentBandGains[i]}dB</span>
+          <input type="range" class="eq-slider" id="eqSlider${i}" min="-12" max="12" step="1" value="${currentBandGains[i]}">
+          <span class="eq-band-label">${FREQ_LABELS[i]}</span>
+        `;
+        eqBandsGrid.appendChild(col);
+
+        const slider = col.querySelector(`#eqSlider${i}`);
+        slider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value);
+          currentBandGains[i] = val;
+          document.getElementById(`eqVal${i}`).textContent = `${val > 0 ? '+' : ''}${val}dB`;
+          eqSelect.value = 'custom';
+          updateAudioEffects();
+        });
+      });
+    }
+
+    eqSelect.addEventListener('change', (e) => {
+      const preset = e.target.value;
+      if (preset !== 'custom' && EQ_PRESETS[preset]) {
+        currentBandGains = [...EQ_PRESETS[preset]];
+        renderEQBandsUI();
+        updateAudioEffects();
+      }
+    });
+
+    limiterGainSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      limiterGainVal.textContent = `${val > 0 ? '+' : ''}${val.toFixed(1)} dB`;
+      updateAudioEffects();
+    });
+
+    normalizeToggle.addEventListener('change', updateAudioEffects);
 
     function setNeonAccent(color) {
       document.documentElement.style.setProperty('--accent', color);
@@ -1019,6 +1181,16 @@
           dolbyGain = audioCtx.createGain();
           dolbyGain.gain.value = 1.0;
 
+          masterGainNode = audioCtx.createGain();
+          masterGainNode.gain.value = 1.0;
+
+          limiterCompressor = audioCtx.createDynamicsCompressor();
+          limiterCompressor.threshold.value = -1.0;
+          limiterCompressor.knee.value = 0;
+          limiterCompressor.ratio.value = 20;
+          limiterCompressor.attack.value = 0.003;
+          limiterCompressor.release.value = 0.1;
+
           trackSource.connect(eqFilters[0]);
           for (let i = 0; i < eqFilters.length - 1; i++) {
             eqFilters[i].connect(eqFilters[i + 1]);
@@ -1026,7 +1198,9 @@
           
           eqFilters[eqFilters.length - 1].connect(dolbyFilter);
           dolbyFilter.connect(dolbyGain);
-          dolbyGain.connect(analyserNode);
+          dolbyGain.connect(masterGainNode);
+          masterGainNode.connect(limiterCompressor);
+          limiterCompressor.connect(analyserNode);
           analyserNode.connect(audioCtx.destination);
 
           drawVisualizer();
@@ -1123,10 +1297,23 @@
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
       if (audioCtx && eqFilters.length > 0) {
-        const gains = EQ_PRESETS[eqSelect.value] || EQ_PRESETS.flat;
         eqFilters.forEach((filter, index) => {
-          filter.gain.setTargetAtTime(gains[index], audioCtx.currentTime, 0.05);
+          filter.gain.setTargetAtTime(currentBandGains[index], audioCtx.currentTime, 0.05);
         });
+
+        const gainDb = parseFloat(limiterGainSlider.value);
+        const linearGain = Math.pow(10, gainDb / 20);
+        masterGainNode.gain.setTargetAtTime(linearGain, audioCtx.currentTime, 0.05);
+
+        if (normalizeToggle.checked) {
+          limiterCompressor.threshold.setTargetAtTime(-12.0, audioCtx.currentTime, 0.05);
+          limiterCompressor.knee.setTargetAtTime(12.0, audioCtx.currentTime, 0.05);
+          limiterCompressor.ratio.setTargetAtTime(8.0, audioCtx.currentTime, 0.05);
+        } else {
+          limiterCompressor.threshold.setTargetAtTime(-1.0, audioCtx.currentTime, 0.05);
+          limiterCompressor.knee.setTargetAtTime(0, audioCtx.currentTime, 0.05);
+          limiterCompressor.ratio.setTargetAtTime(20, audioCtx.currentTime, 0.05);
+        }
 
         if (dolbyToggle.checked) {
           dolbyFilter.gain.setTargetAtTime(4.5, audioCtx.currentTime, 0.1);
@@ -1138,7 +1325,6 @@
       }
     }
 
-    eqSelect.addEventListener('change', updateAudioEffects);
     dolbyToggle.addEventListener('change', updateAudioEffects);
 
     searchInput.addEventListener('input', renderSearchUI);
@@ -1516,6 +1702,7 @@
         const aviso = document.getElementById('meow-aviso-privacidad');
         if (aviso) aviso.style.display = 'none';
       }
+      renderEQBandsUI();
       resizeCanvas();
       renderQueueUI();
       renderSearchUI();

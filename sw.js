@@ -4,7 +4,6 @@ self.addEventListener('fetch', (event) => {
     return; // Deja que el navegador maneje el archivo local de forma nativa
   }
 
-  // Tu lógica actual de caché para index.html, estilos y temas va aquí abajo...
 });
 
 

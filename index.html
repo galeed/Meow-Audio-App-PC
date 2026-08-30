@@ -1397,62 +1397,73 @@
       }
     });
 
-    async function processAndPlayTrack(index) {
-      if (!playlist[index]) return;
-      const track = playlist[index];
+    // REEMPLAZAR DESDE AQUÍ:
+async function processAndPlayTrack(index) {
+  if (!playlist[index]) return;
+  const track = playlist[index];
 
-      initAudioContext();
-      if (audioCtx.state === 'suspended') {
-        await audioCtx.resume();
-      }
+  initAudioContext();
+  if (audioCtx.state === 'suspended') {
+    await audioCtx.resume();
+  }
 
-      if (currentObjectUrl) {
-        URL.revokeObjectURL(currentObjectUrl);
-      }
+  if (currentObjectUrl) {
+    URL.revokeObjectURL(currentObjectUrl);
+  }
 
-      currentObjectUrl = URL.createObjectURL(track.file);
-      audio.src = currentObjectUrl;
+  currentObjectUrl = URL.createObjectURL(track.file);
+  audio.src = currentObjectUrl;
 
-      titleEl.textContent = track.title;
-      artistEl.textContent = track.artist;
-      albumEl.textContent = track.album;
-      coverEl.src = track.coverUrl;
-      bgBlur.style.backgroundImage = `url('${track.coverUrl}')`;
+  titleEl.textContent = track.title;
+  artistEl.textContent = track.artist;
+  albumEl.textContent = track.album;
+  coverEl.src = track.coverUrl;
+  bgBlur.style.backgroundImage = `url('${track.coverUrl}')`;
 
-      audioSpecsEl.innerHTML = '';
-      statusEl.textContent = 'Analizando audio...';
+  audioSpecsEl.innerHTML = '';
+  statusEl.textContent = 'Analizando audio...';
 
-      try {
-        const arrayBuffer = await track.file.slice(0, 128 * 1024).arrayBuffer();
-        const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const audioBuffer = await tempCtx.decodeAudioData(arrayBuffer);
-        
-        track.sampleRate = audioBuffer.sampleRate;
-        track.bitDepth = 16;
-        if (track.file.name.toLowerCase().endsWith('.flac') || track.sampleRate > 48000) {
-          track.bitDepth = 24;
-        }
+  try {
+    const arrayBuffer = await track.file.slice(0, 128 * 1024).arrayBuffer();
+    const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const audioBuffer = await tempCtx.decodeAudioData(arrayBuffer);
+    
+    // Extraer formato/extensión del archivo
+    const extMatch = track.file.name.match(/\.([0-9a-z]+)$/i);
+    track.format = extMatch ? extMatch[1].toUpperCase() : 'AUDIO';
 
-        track.isHiRes = (track.sampleRate >= 88200 || track.bitDepth > 16);
-
-        renderSpecsBadge(track);
-        tempCtx.close();
-      } catch (e) {
-        statusEl.textContent = '';
-      }
-
-      audio.play().then(() => {
-        btnPlay.textContent = '⏸';
-        statusEl.textContent = '';
-        resizeCanvas();
-        if (!animFrameId) drawVisualizer();
-      }).catch(err => {
-        btnPlay.textContent = '▶';
-        statusEl.textContent = 'Error al reproducir';
-      });
-
-      renderQueueUI();
+    track.sampleRate = audioBuffer.sampleRate;
+    
+    // Profundidad de bits estimada
+    track.bitDepth = 16;
+    if (track.format === 'FLAC' || track.format === 'WAV' || track.sampleRate > 48000) {
+      track.bitDepth = 24;
     }
+
+    // Criterio Hi-Res (88.2kHz+ o 24-bit)
+    track.isHiRes = (track.sampleRate >= 88200 || track.bitDepth > 16);
+
+    renderSpecsBadge(track);
+    tempCtx.close();
+  } catch (e) {
+    const extMatch = track.file.name.match(/\.([0-9a-z]+)$/i);
+    track.format = extMatch ? extMatch[1].toUpperCase() : 'AUDIO';
+    renderSpecsBadge(track);
+  }
+
+  audio.play().then(() => {
+    btnPlay.textContent = '⏸';
+    statusEl.textContent = '';
+    resizeCanvas();
+    if (!animFrameId) drawVisualizer();
+  }).catch(err => {
+    btnPlay.textContent = '▶';
+    statusEl.textContent = 'Error al reproducir';
+  });
+
+  renderQueueUI();
+}
+
 
     function renderSpecsBadge(track) {
       audioSpecsEl.innerHTML = '';

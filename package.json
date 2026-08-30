@@ -1,0 +1,12 @@
+{
+  "name": "meow-audio-app-pc",
+  "version": "1.0.0",
+  "main": "index.html",
+  "scripts": {
+    "build-32": "nwbuild --platforms win32 --arch ia32 .",
+    "build-64": "nwbuild --platforms win32 --arch x64 ."
+  },
+  "devDependencies": {
+    "nw-builder": "^4.0.0"
+  }
+}

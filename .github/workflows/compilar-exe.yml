@@ -1,0 +1,43 @@
+name: Compilar Ejecutables Windows (32-bit & 64-bit)
+
+on:
+  push:
+    tags:
+      - 'v*' # Se activa cuando subes un tag como v1.0.0
+  workflow_dispatch: # Permite ejecutar la compilación manualmente desde el navegador
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js (64-bit en la nube)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Compilar versión de 32 bits (ia32)
+        run: npm run build-32
+
+      - name: Compilar versión de 64 bits (x64)
+        run: npm run build-64
+
+      - name: Comprimir ejecutables en archivos ZIP
+        run: |
+          Compress-Archive -Path build/win32/* -DestinationPath app-windows-32bit.zip
+          Compress-Archive -Path build/win64/* -DestinationPath app-windows-64bit.zip
+
+      - name: Publicar instaladores en GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            app-windows-32bit.zip
+            app-windows-64bit.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1466,22 +1466,30 @@ async function processAndPlayTrack(index) {
 
 
     function renderSpecsBadge(track) {
-      audioSpecsEl.innerHTML = '';
-      if (!track.sampleRate) return;
+  audioSpecsEl.innerHTML = '';
+  
+  const formatText = track.format || 'AUDIO';
+  
+  if (!track.sampleRate) {
+    audioSpecsEl.textContent = formatText;
+    return;
+  }
 
-      const srKhz = (track.sampleRate / 1000).toFixed(1).replace('.0', '');
-      const textNode = document.createTextNode(`${srKhz} kHz / ${track.bitDepth} bit`);
+  const srKhz = (track.sampleRate / 1000).toFixed(1).replace('.0', '');
+  const specsString = `${formatText} • ${srKhz} kHz • ${track.bitDepth} bit`;
+  
+  const textNode = document.createTextNode(specsString);
 
-      if (track.isHiRes) {
-        const img = document.createElement('img');
-        img.src = HI_RES_SVG;
-        img.className = 'hires-icon';
-        img.alt = 'Hi-Res Audio';
-        audioSpecsEl.appendChild(img);
-      }
+  if (track.isHiRes) {
+    const img = document.createElement('img');
+    img.src = HI_RES_SVG;
+    img.className = 'hires-icon';
+    img.alt = 'Hi-Res Audio';
+    audioSpecsEl.appendChild(img);
+  }
 
-      audioSpecsEl.appendChild(textNode);
-    }
+  audioSpecsEl.appendChild(textNode);
+}
 
     function togglePlay() {
       if (playlist.length === 0) return;

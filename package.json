@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.html",
   "scripts": {
-    "build-32": "nwbuild --platforms win32 --arch ia32 .",
-    "build-64": "nwbuild --platforms win32 --arch x64 ."
+    "build-32": "npx nwbuild --platforms win --arch ia32 --appIcon app-icon.ico --outDir build/win32 .",
+    "build-64": "npx nwbuild --platforms win --arch x64 --appIcon app-icon.ico --outDir build/win64 ."
   },
   "devDependencies": {
     "nw-builder": "^4.0.0"

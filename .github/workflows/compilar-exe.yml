@@ -14,7 +14,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Instalar dependencias
         run: npm install
@@ -27,12 +27,11 @@ jobs:
 
       - name: Comprimir carpetas resultantes en ZIP
         run: |
-          Get-ChildItem -Path build\* -Directory | ForEach-Object {
-            Compress-Archive -Path "$($_.FullName)\*" -DestinationPath "$($_.Name).zip" -Force
-          }
+          Compress-Archive -Path build/win32/* -DestinationPath app-windows-32bit.zip
+          Compress-Archive -Path build/win64/* -DestinationPath app-windows-64bit.zip
 
-      - name: Subir ejecutables como Artefactos de la ejecución
+      - name: Subir ejecutables como Artefactos
         uses: actions/upload-artifact@v4
         with:
-          name: Ejecutables-Windows-32bit-y-64bit
+          name: Ejecutables-Windows
           path: "*.zip"

@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build-64": "electron-builder --win nsis --x64"
+    "build-64": "electron-builder --win nsis --x64 --publish never"
   },
   "devDependencies": {
     "electron": "^28.0.0",

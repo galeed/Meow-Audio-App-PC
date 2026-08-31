@@ -1,4 +1,4 @@
-name: Compilar Ejecutables Windows (32-bit & 64-bit)
+name: Compilar Ejecutable Windows 64-bit
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Descargar el código del repositorio
+      - name: Descargar repositorio
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
@@ -19,19 +19,11 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Compilar versión de 32 bits (ia32)
-        run: npm run build-32
-
-      - name: Compilar versión de 64 bits (x64)
+      - name: Compilar ejecutable 64 bits
         run: npm run build-64
 
-      - name: Comprimir carpetas resultantes en ZIP
-        run: |
-          Compress-Archive -Path build/win32/* -DestinationPath app-windows-32bit.zip
-          Compress-Archive -Path build/win64/* -DestinationPath app-windows-64bit.zip
-
-      - name: Subir ejecutables como Artefactos
+      - name: Subir instalador como Artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: Ejecutables-Windows
-          path: "*.zip"
+          name: Instalador-Windows-64bit
+          path: dist/*.exe

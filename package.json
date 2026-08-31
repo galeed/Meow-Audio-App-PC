@@ -1,12 +1,26 @@
 {
   "name": "meow-audio-app-pc",
   "version": "1.0.0",
-  "main": "index.html",
+  "main": "main.js",
   "scripts": {
-    "build-32": "npx nwbuild --mode build --version 0.82.0 --flavor normal --platforms win --arch ia32 --srcDir . --outDir build/win32",
-    "build-64": "npx nwbuild --mode build --version 0.82.0 --flavor normal --platforms win --arch x64 --srcDir . --outDir build/win64"
+    "start": "electron .",
+    "build-64": "electron-builder --win nsis --x64"
   },
   "devDependencies": {
-    "nw-builder": "^4.0.0"
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.0"
+  },
+  "build": {
+    "appId": "com.galeed.meowaudioapp",
+    "productName": "Meow Audio App",
+    "win": {
+      "target": "nsis"
+    },
+    "files": [
+      "index.html",
+      "css/**/*",
+      "js/**/*",
+      "main.js"
+    ]
   }
 }

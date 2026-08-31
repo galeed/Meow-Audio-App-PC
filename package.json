@@ -14,13 +14,14 @@
     "appId": "com.galeed.meowaudioapp",
     "productName": "Meow Audio App",
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "app-icon.ico"
     },
     "files": [
       "index.html",
-      "css/**/*",
-      "js/**/*",
-      "main.js"
+      "main.js",
+      "sw.js",
+      "app-icon.ico"
     ]
   }
 }

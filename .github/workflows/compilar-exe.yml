@@ -1,10 +1,10 @@
-name: Compilar EXE 64-bits y Desplegar a Cloudflare R2
+name: Compilar Ejecutable Windows 64-bit
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-and-upload:
+  build:
     runs-on: windows-latest
 
     steps:
@@ -14,27 +14,16 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
-      - name: Instalar dependencias y compilar EXE
-        shell: cmd
-        run: |
-          npm install
-          npm run build
+      - name: Instalar dependencias
+        run: npm install
 
-      - name: Configurar AWS CLI para Cloudflare R2
-        shell: cmd
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.R2_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          aws configure set default.region auto
+      - name: Compilar ejecutable 64 bits
+        run: npm run build-64
 
-      - name: Subir ejecutable a Cloudflare R2
-        shell: cmd
-        run: |
-          for /r dist %%f in (*.exe) do (
-            aws s3 cp "%%f" s3://%R2_BUCKET_NAME%/MeowAudioApp-x64.exe --endpoint-url %R2_ENDPOINT_URL%
-          )
-        env:
-          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
-          R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
+      - name: Subir instalador como Artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: Instalador-Windows-64bit
+          path: dist/*.exe

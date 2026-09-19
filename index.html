@@ -831,92 +831,91 @@
     <div class="content-section">
       <h1 class="app-title-main">Meow Audio App PC 🐈</h1>
       
-      <!-- Pestaña 1: Configuración -->
-      <div class="tab-pane" id="paneSettings">
-        <div class="pane-header">Configuración Avanzada</div>
-        <div class="settings-group">
-          
-          <!-- Creador de Temas Neón -->
-          <div class="control-box">
-            <div class="control-row">
-              <span class="control-label">Color de Acento Neón</span>
-              <div class="neon-presets">
-                <div class="neon-swatch" style="background:#00f3ff;" onclick="setNeonAccent('#00f3ff')" title="Cyan Cyberpunk"></div>
-                <div class="neon-swatch" style="background:#ff4757;" onclick="setNeonAccent('#ff4757')" title="Rojo Neón"></div>
-                <div class="neon-swatch" style="background:#00ff66;" onclick="setNeonAccent('#00ff66')" title="Verde Matrix"></div>
-                <div class="neon-swatch" style="background:#ff007f;" onclick="setNeonAccent('#ff007f')" title="Rosa Synthwave"></div>
-                <div class="neon-swatch" style="background:#9b51e0;" onclick="setNeonAccent('#9b51e0')" title="Púrpura Eléctrico"></div>
-                <input type="color" id="accentColorPicker" class="color-picker-input" value="#00f3ff" title="Personalizado">
-              </div>
+    <!-- OVERLAY AJUSTES -->
+      <div class="modal-overlay" id="settingsOverlay">
+        <div class="playlist-header">
+          <span class="playlist-title">Ajustes ⚙️</span>
+          <button class="btn-icon" id="btnCloseSettings">✕</button>
+        </div>
+        
+        <div class="settings-body">
+          <div class="settings-item">
+            <div class="settings-title">🎚 Crossfade (Transición)</div>
+            <div class="settings-desc">Superposición entre pistas al cambiar de canción.</div>
+            <div class="settings-row">
+              <span class="settings-desc" style="font-weight:600;">Tiempo: <span id="crossfadeVal">0</span>s</span>
+              <input type="range" id="crossfadeTime" min="0" max="10" value="0" step="0.5" style="width:120px; accent-color:var(--accent);">
             </div>
           </div>
 
-          <!-- Visualizador de Audio (Desactivado por defecto) -->
-          <div class="control-box">
-            <div class="control-row">
-              <span class="control-label">Visualizador de Audio</span>
-              <select id="visualizerSelect" class="eq-select">
+          <div class="settings-item">
+            <div class="settings-title">📊 Espectro de Audio</div>
+            <div class="settings-desc">Espectro dinámico sobre la tarjeta de metadatos.</div>
+            <div class="settings-row">
+              <span class="settings-desc" style="font-weight:600;">Modo:</span>
+              <select id="visualizerSelect" class="settings-select">
                 <option value="off" selected>Desactivado</option>
-                <option value="bars">Barras Neón</option>
-                <option value="wave">Onda Sinusoidal</option>
-                <option value="circle">Espectro Circular</option>
+                <option value="bars">Barras Horizontales (LED)</option>
+                <option value="scope">Ámbito / Osciloscopio</option>
+                <option value="hybrid">Modo Híbrido</option>
               </select>
             </div>
           </div>
 
-          <!-- Normalización de Volumen y Limitador/Gain -->
-          <div class="control-box">
-            <div class="control-row">
-              <span class="control-label">Normalización de Volumen</span>
-              <label class="toggle-switch">
-                <input type="checkbox" id="normalizeToggle">
-                <span class="slider"></span>
-              </label>
-            </div>
-            <div class="control-row" style="margin-top: 4px;">
-              <span class="control-label">Limitador (Boost / Gain)</span>
-              <div class="limiter-slider-container">
-                <input type="range" id="limiterGainSlider" class="limiter-slider" min="-6" max="6" step="0.5" value="0">
-                <span class="limiter-val-label" id="limiterGainVal">0.0 dB</span>
-              </div>
+          <div class="settings-item">
+            <div class="settings-title">🎨 Paleta del Espectro</div>
+            <div class="settings-desc">Esquemas científicos de alto contraste.</div>
+            <div class="settings-row">
+              <span class="settings-desc" style="font-weight:600;">Esquema:</span>
+              <select id="paletteSelect" class="settings-select">
+                <option value="neon" selected>Neón Cyan / Magenta</option>
+                <option value="viridis">Viridis (Accesible)</option>
+                <option value="plasma">Plasma (Alto Contraste)</option>
+                <option value="cividis">Cividis (Optimizado Daltonismo)</option>
+              </select>
             </div>
           </div>
 
-          <!-- Ecualizador 10 Bandas Ajustable -->
-          <div class="control-box">
-            <div class="control-row">
-              <span class="control-label">Ecualizador de 10 Bandas</span>
-              <select id="eqSelect" class="eq-select">
-                <option value="custom">Personalizado</option>
-                <option value="flat" selected>Plano</option>
+          <div class="settings-item">
+            <div class="settings-title">🔊 Medidor LUFS & Peak</div>
+            <div class="settings-desc">Estimación de sonoridad en tiempo real.</div>
+            <div class="settings-row">
+              <span class="settings-desc" style="font-weight:600;">Estado:</span>
+              <select id="lufsSelect" class="settings-select">
+                <option value="off" selected>Desactivado</option>
+                <option value="on">Activo</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-item">
+            <div class="settings-title">🎛 Ecualizador (EQ)</div>
+            <div class="settings-desc">Ajuste de respuesta de frecuencia.</div>
+            <div class="settings-row">
+              <span class="settings-desc" style="font-weight:600;">Preset:</span>
+              <select id="eqSelect" class="settings-select">
+                <option value="flat">Plano / Desactivado</option>
                 <option value="bassBoost">Bass Boost</option>
-                <option value="electronic">Electronic</option>
-                <option value="hiphop">Hip-Hop</option>
-                <option value="jazz">Jazz</option>
+                <option value="electronic">Electronic / EDM</option>
+                <option value="hardstyle">Hardstyle / Raw</option>
+                <option value="dance">Dance / Club</option>
+                <option value="hiphop">Hip-Hop / Urban</option>
+                <option value="rnb">R&B / Soul</option>
                 <option value="pop">Pop</option>
                 <option value="rock">Rock</option>
-              </select>
-            </div>
-            <div class="eq-bands-grid" id="eqBandsGrid">
-              <!-- Renderizado dinámico de los 10 deslizadores -->
-            </div>
-          </div>
-
-          <!-- Skins -->
-          <div class="control-box">
-            <div class="control-row">
-              <span class="control-label">Skins (Modo colapsado)</span>
-              <select id="skinSelect" class="eq-select">
-                <option value="classic">Meow Classic</option>
-                <option value="modern">Meow Modern</option>
+                <option value="classical">Classical / Orchestral</option>
+                <option value="acoustic">Acoustic</option>
+                <option value="vocal">Vocal Booster</option>
+                <option value="pureAudio">Pure Audio Hi-Res</option>
               </select>
             </div>
           </div>
 
-          <!-- Dolby Digital -->
-          <div class="control-box">
-            <div class="control-row">
-              <span class="control-label">Efecto Dolby Digital</span>
+          <div class="settings-item">
+            <div class="settings-title">🎧 Dolby Spatial Audio</div>
+            <div class="settings-desc">Simula espacialización envolvente.</div>
+            <div class="settings-row">
+              <span class="settings-desc" style="font-weight:600;">Modo Espacial</span>
               <label class="toggle-switch">
                 <input type="checkbox" id="dolbyToggle">
                 <span class="slider"></span>
@@ -924,8 +923,34 @@
             </div>
           </div>
 
+          <div class="settings-item">
+            <div class="settings-title">💾 Exportación de Datos</div>
+            <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+              <button class="btn-action" id="exportM3u8">Exportar Lista (.m3u8)</button>
+              <button class="btn-action" id="exportJson">Exportar Lista (.json)</button>
+              <button class="btn-action btn-action-magenta" id="exportReport">Descargar Reporte TXT</button>
+            </div>
+          </div>
+
+          <div class="settings-item">
+            <div class="settings-title">⌨️ Atajos de Teclado</div>
+            <div class="settings-desc" style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:6px;">
+              <div><kbd>Espacio</kbd> Play / Pausa</div>
+              <div><kbd>N</kbd> Siguiente Pista</div>
+              <div><kbd>P</kbd> Anterior Pista</div>
+              <div><kbd>M</kbd> Mute / Unmute</div>
+              <div><kbd>↑</kbd> Subir Volumen</div>
+              <div><kbd>↓</kbd> Bajar Volumen</div>
+            </div>
+          </div>
+
+          <div class="settings-item">
+            <div class="settings-title">MEOW AUDIO APP v2.4</div>
+            <div class="settings-desc">Reproducción directa fluida sin pausas.</div>
+          </div>
         </div>
       </div>
+    </div>
 
       <!-- Pestaña 2: Cola de Reproducción (Default) -->
       <div class="tab-pane" id="paneQueue">

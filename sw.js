@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meow-audio-pc-v2.4';
+const CACHE_NAME = 'meow-audio-pc';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

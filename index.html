@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meow Audio App PC v2.4</title>
+  <title>Meow Audio App PC</title>
+  <link rel="icon" href="./app-icon.ico" type="image/x-icon">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
     :root {
@@ -46,7 +47,6 @@
       z-index: -1;
     }
 
-    /* CONTENEDOR PRINCIPAL DEL REPRODUCTOR Y PANELES */
     .app-container {
       width: 94%;
       max-width: 1100px;
@@ -67,7 +67,6 @@
       transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.4s ease;
     }
 
-    /* ESTADO INICIAL / HOME: REPRODUCTOR CENTRADO */
     .app-container.collapsed {
       grid-template-columns: 1fr 0px;
       max-width: 580px;
@@ -285,7 +284,6 @@
     .btn-sub { font-size: 1.15rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
 
-    /* FILA INFERIOR DE ACCIONES: AÑADIR (IZQ) Y PANTALLA COMPLETA (DER) */
     .action-buttons-row {
       display: flex;
       justify-content: space-between;
@@ -326,69 +324,6 @@
       cursor: pointer;
     }
 
-    /* SKIN MEOW MODERN */
-    .app-container.collapsed.skin-modern {
-      max-width: 920px;
-    }
-
-    .app-container.collapsed.skin-modern .player-section {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      grid-template-rows: auto 1fr auto auto auto;
-      grid-template-areas:
-        "header header"
-        "cover info"
-        "progress progress"
-        "controls controls"
-        "actions actions";
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      max-width: 840px;
-      margin: 0 auto;
-      padding-left: 10px;
-      padding-right: 10px;
-    }
-
-    .app-container.collapsed.skin-modern .player-header-title {
-      grid-area: header;
-      margin-bottom: 0;
-    }
-
-    .app-container.collapsed.skin-modern .cover-container {
-      grid-area: cover;
-      justify-content: center;
-      margin: 0;
-    }
-
-    .app-container.collapsed.skin-modern .cover-art {
-      width: 240px;
-      height: 240px;
-      max-width: 240px;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 18px;
-    }
-
-    .app-container.collapsed.skin-modern .track-info {
-      grid-area: info;
-      text-align: left;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 8px;
-      padding-left: 28px;
-      overflow: hidden;
-    }
-
-    .app-container.collapsed.skin-modern .track-title { font-size: 1.9rem; }
-    .app-container.collapsed.skin-modern .track-artist { font-size: 1.35rem; }
-    .app-container.collapsed.skin-modern .track-album { font-size: 1.1rem; }
-    .app-container.collapsed.skin-modern .progress-container { grid-area: progress; width: 100%; }
-    .app-container.collapsed.skin-modern .controls { grid-area: controls; justify-content: center; gap: 36px; }
-    .app-container.collapsed.skin-modern .action-buttons-row { grid-area: actions; }
-
-    /* SECCIÓN CENTRAL DE PANELES */
     .content-section {
       padding: 0 0 0 20px;
       display: flex;
@@ -431,7 +366,6 @@
       flex-shrink: 0;
     }
 
-    /* AJUSTES Y DIVERSIÓN AUDIO */
     .settings-group {
       display: flex;
       flex-direction: column;
@@ -543,7 +477,6 @@
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(18px); }
 
-    /* ECUALIZADOR 10 BANDAS */
     .eq-bands-grid {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
@@ -639,7 +572,6 @@
       font-family: monospace;
     }
 
-    /* LISTA Y BÚSQUEDA */
     .sort-bar {
       display: flex;
       align-items: center;
@@ -774,7 +706,6 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* AVISO GATUNO */
     .meow-aviso-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -818,9 +749,7 @@
 
   <div class="bg-blur" id="bgBlur"></div>
 
-  <!-- CONTENEDOR PRINCIPAL DEL REPRODUCTOR (COLAPSADO DE DEFAULT) -->
   <div class="app-container collapsed" id="appContainer">
-    <!-- SECCIÓN IZQUIERDA: REPRODUCTOR -->
     <div class="player-section" id="playerSection">
       <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
       <div class="player-header-title">Meow Audio App PC 🐈</div>
@@ -855,7 +784,6 @@
         <button class="btn btn-sub" id="btnRepeat" title="Repetir">🔁</button>
       </div>
 
-      <!-- BOTÓN AÑADIR (IZQUIERDA) Y PANTALLA COMPLETA (DERECHA) -->
       <div class="action-buttons-row">
         <div class="action-circle-btn" title="Añadir canciones">
           ➕
@@ -866,16 +794,13 @@
       </div>
     </div>
 
-    <!-- SECCIÓN DERECHA: PANELES DE CONTENIDO -->
     <div class="content-section">
       <h1 class="app-title-main">Meow Audio App PC 🐈</h1>
       
-      <!-- Pestaña 1: Configuración -->
       <div class="tab-pane" id="paneSettings">
         <div class="pane-header">Configuración Avanzada</div>
         <div class="settings-group">
           
-          <!-- Creador de Temas Neón -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">Color de Acento Neón</span>
@@ -890,7 +815,6 @@
             </div>
           </div>
 
-          <!-- Crossfade (Transición) -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">🎚 Crossfade (Transición)</span>
@@ -901,7 +825,6 @@
             </div>
           </div>
 
-          <!-- Espectro de Audio -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">📊 Espectro de Audio</span>
@@ -916,7 +839,6 @@
             </div>
           </div>
 
-          <!-- Paleta del Espectro -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">🎨 Paleta del Espectro</span>
@@ -929,7 +851,6 @@
             </div>
           </div>
 
-          <!-- Medidor LUFS & Peak -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">🔊 Medidor LUFS & Peak</span>
@@ -940,7 +861,6 @@
             </div>
           </div>
 
-          <!-- Normalización de Volumen y Limitador/Gain -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">Normalización de Volumen</span>
@@ -958,7 +878,6 @@
             </div>
           </div>
 
-          <!-- Ecualizador de Bandas -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">🎛 Ecualizador (EQ)</span>
@@ -983,7 +902,6 @@
             <div class="eq-bands-grid" id="eqBandsGrid"></div>
           </div>
 
-          <!-- Skins -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">Skins (Modo colapsado)</span>
@@ -994,7 +912,6 @@
             </div>
           </div>
 
-          <!-- Dolby Digital -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">🎧 Efecto Dolby Spatial Audio</span>
@@ -1005,7 +922,6 @@
             </div>
           </div>
 
-          <!-- Exportación de Datos -->
           <div class="control-box">
             <span class="control-label" style="margin-bottom:4px;">💾 Exportación de Datos</span>
             <div style="display:flex; flex-direction:column; gap:6px;">
@@ -1015,7 +931,6 @@
             </div>
           </div>
 
-          <!-- Atajos de Teclado -->
           <div class="control-box">
             <span class="control-label">⌨️ Atajos de Teclado</span>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:4px; font-size:0.75rem; color:var(--text-muted);">
@@ -1028,7 +943,6 @@
             </div>
           </div>
 
-          <!-- Info Version -->
           <div class="control-box">
             <span class="control-label" style="font-weight:700;">MEOW AUDIO APP v2.4</span>
             <span style="font-size:0.75rem; color:var(--text-muted);">Reproducción directa fluida sin pausas.</span>
@@ -1037,7 +951,6 @@
         </div>
       </div>
 
-      <!-- Pestaña 2: Cola de Reproducción -->
       <div class="tab-pane" id="paneQueue">
         <div class="pane-header">Cola de Reproducción</div>
         <div class="sort-bar">
@@ -1052,7 +965,6 @@
         <ul class="playlist-list" id="queueContainer"></ul>
       </div>
 
-      <!-- Pestaña 3: Búsqueda -->
       <div class="tab-pane" id="paneSearch">
         <div class="pane-header">Buscador</div>
         <input type="text" id="searchInput" class="search-input" placeholder="Escribe título, artista o álbum...">
@@ -1062,7 +974,6 @@
     </div>
   </div>
 
-  <!-- BARRA DE NAVEGACIÓN INDEPENDIENTE UBICADA FUERA DEL REPRODUCTOR (ISLAND DOCK) -->
   <div class="outer-bottom-nav">
     <button class="bottom-nav-btn active" id="btnTabHome" title="Inicio / Reproductor">🏠</button>
     <button class="bottom-nav-btn" id="btnTabQueue" title="Cola de reproducción">☰</button>
@@ -1073,6 +984,14 @@
   <audio id="audio" preload="auto"></audio>
 
   <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registrado con éxito:', reg.scope))
+          .catch(err => console.warn('Error al registrar Service Worker:', err));
+      });
+    }
+
     const DEFAULT_COVER = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5'><path d='M9 18V5l12-2v13'/><circle cx='6' cy='18' r='3'/><circle cx='18' cy='16' r='3'/></svg>";
     const HI_RES_SVG = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23d4af37' rx='8'/><path d='M0 95 Q100 130 200 95 L200 200 L0 200 Z' fill='%23000000'/><text x='100' y='68' font-family='Arial Black, sans-serif' font-weight='900' font-size='56' fill='%23000000' text-anchor='middle'>Hi-Res</text><text x='100' y='165' font-family='Arial, sans-serif' font-weight='900' font-size='42' fill='%23d4af37' text-anchor='middle'>AUDIO</text></svg>`;
 
@@ -1152,7 +1071,6 @@
 
     let crossfadeTime = 0;
 
-    // BASE DE DATOS INDEXEDDB
     const DB_NAME = 'MeowAudioPCDb';
     const DB_VERSION = 2;
     const STORE_NAME = 'songs';
@@ -1229,7 +1147,6 @@
       }
     }
 
-    // ECUALIZADOR 10 BANDAS Y PRESETS COMPLETOS
     const FREQUENCIES = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
     const FREQ_LABELS = ['32Hz', '64Hz', '125Hz', '250Hz', '500Hz', '1kHz', '2kHz', '4kHz', '8kHz', '16kHz'];
     let currentBandGains = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -1974,7 +1891,6 @@
       }
     });
 
-    // ATAJOS DE TECLADO
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
 
@@ -2003,7 +1919,6 @@
       }
     });
 
-    // EXPORTACIÓN DE DATOS
     document.getElementById('exportM3u8').addEventListener('click', () => {
       if (playlist.length === 0) return alert("La lista está vacía");
       let content = "#EXTM3U\n";

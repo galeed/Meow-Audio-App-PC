@@ -1,27 +1,21 @@
 {
   "name": "meow-audio-app-pc",
-  "version": "2.0.0",
+  "version": "2.4.0",
+  "description": "Meow Audio App PC - Reproductor de Audio Web & PWA",
   "main": "main.js",
+  "type": "module",
   "scripts": {
-    "start": "electron .",
-    "build-64": "electron-builder --win nsis --x64 --publish never"
+    "start": "npx serve ."
   },
+  "keywords": [
+    "pwa",
+    "audio-player",
+    "web-audio"
+  ],
+  "author": "Joël Balam",
+  "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-builder": "^24.9.0"
-  },
-  "build": {
-    "appId": "com.galeed.meowaudioapp",
-    "productName": "Meow Audio App",
-    "win": {
-      "target": "nsis",
-      "icon": "app-icon.ico"
-    },
-    "files": [
-      "index.html",
-      "main.js",
-      "sw.js",
-      "app-icon.ico"
-    ]
+    "serve": "^14.2.1"
   }
 }

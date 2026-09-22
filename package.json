@@ -15,7 +15,8 @@
   "author": "Joël Balam",
   "license": "MIT",
   "dependencies": {},
-  "devDependencies": {
-    "serve": "^14.2.1"
+    "devDependencies": {
+    "serve": "^14.2.1",
+    "webpack": "^5.90.0",
+    "webpack-cli": "^5.1.4"
   }
-}

@@ -178,6 +178,17 @@
       text-overflow: ellipsis;
     }
 
+    .lufs-meter-badge {
+      display: none;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #7bed9f;
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      transition: color 0.2s ease;
+    }
+
     .audio-specs-badge {
       display: flex;
       align-items: center;
@@ -798,10 +809,16 @@
         <img class="cover-art" id="cover" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5'><path d='M9 18V5l12-2v13'/><circle cx='6' cy='18' r='3'/><circle cx='18' cy='16' r='3'/></svg>" alt="Cover">
       </div>
 
-      <div class="track-info">
-        <div class="track-title" id="title">Sin reproducción</div>
-        <div class="track-artist" id="artist">Añade canciones con el botón ➕</div>
-        <div class="track-album" id="album"></div>
+      <!-- METADATOS & VISUALIZADOR -->
+      <div class="track-info-container" id="trackInfoContainer" title="Haz clic para alternar tipo de visualizador">
+        <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
+        <div class="track-info-content">
+          <div class="track-title" id="title">Sin reproducción</div>
+          <div class="track-artist" id="artist">Selecciona un archivo</div>
+          <div class="track-album" id="album"></div>
+          <div class="lufs-meter-badge" id="lufsBadge">--.- LUFS S | Peak: -- dB</div>
+        </div>
+      </div>
         <div class="audio-specs-badge" id="audioSpecs"></div>
       </div>
 

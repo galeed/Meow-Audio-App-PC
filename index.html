@@ -68,66 +68,6 @@
       position: relative;
     }
 
-    .app-container.landscape {
-      max-width: 980px;
-      max-height: 100vh;
-      padding: 14px;
-    }
-
-    .app-container.landscape .player-card {
-      display: grid;
-      grid-template-columns: minmax(180px, 0.8fr) minmax(360px, 1.4fr);
-      grid-template-rows: auto 1fr;
-      column-gap: 22px;
-      row-gap: 8px;
-      padding: 18px 22px;
-      align-items: center;
-    }
-
-    .app-container.landscape .player-header {
-      grid-column: 1 / -1;
-      grid-row: 1;
-    }
-
-    .app-container.landscape .cover-container {
-      grid-column: 1;
-      grid-row: 2;
-      margin: 0;
-    }
-
-    .app-container.landscape .cover-art {
-      max-width: min(34vh, 280px);
-    }
-
-    .app-container.landscape .track-info-container,
-    .app-container.landscape .audio-specs-badge,
-    .app-container.landscape .status-badge,
-    .app-container.landscape .progress-container,
-    .app-container.landscape .controls,
-    .app-container.landscape .action-buttons-row {
-      grid-column: 2;
-    }
-
-    .app-container.landscape .track-info-container { grid-row: 2; margin: 0; }
-    .app-container.landscape .audio-specs-badge { grid-row: 2; align-self: end; margin-bottom: 82px; }
-    .app-container.landscape .status-badge { grid-row: 2; align-self: end; margin-bottom: 62px; }
-    .app-container.landscape .progress-container { grid-row: 2; align-self: end; margin-bottom: 38px; }
-    .app-container.landscape .controls { grid-row: 2; align-self: end; margin-bottom: 0; }
-    .app-container.landscape .action-buttons-row { grid-row: 2; align-self: end; justify-content: center; margin-top: 72px; }
-
-    .app-container.landscape .bottom-nav {
-      max-width: 520px;
-      align-self: center;
-    }
-
-    @media (max-width: 700px) and (orientation: landscape) {
-      .app-container.landscape { padding: 8px; }
-      .app-container.landscape .player-card { column-gap: 12px; padding: 12px; }
-      .app-container.landscape .cover-art { max-width: min(38vh, 210px); }
-      .app-container.landscape .track-title { font-size: 1.1rem; }
-      .app-container.landscape .controls .btn { width: 42px; height: 42px; }
-    }
-
     .bg-blur {
       position: fixed;
       top: -20px;
@@ -877,8 +817,7 @@
 
       <!-- ACCIONES -->
       <div class="action-buttons-row">
-        <button class="icon-action-btn" id="btnFullscreen" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
-        <button class="icon-action-btn" id="btnOrientation" title="Cambiar orientación" aria-label="Cambiar a modo horizontal">↔</button>
+        <button class="icon-action-btn" id="btnFullscreen" title="Pantalla completa">⛶</button>
         <div class="file-input-wrapper">
           <button class="icon-action-btn" title="Añadir canciones">➕</button>
           <input type="file" id="fileInput" class="real-file-input" multiple accept=".mp3,.wav,.ogg,.flac,.m4a,.aac,audio/*">
@@ -1054,8 +993,6 @@
     const btnShuffle = document.getElementById('btnShuffle');
     const btnRepeat = document.getElementById('btnRepeat');
     const btnFullscreen = document.getElementById('btnFullscreen');
-    const btnOrientation = document.getElementById('btnOrientation');
-    const appContainer = document.querySelector('.app-container');
 
     const coverEl = document.getElementById('cover');
     const titleEl = document.getElementById('title');
@@ -1429,25 +1366,6 @@
         if (document.exitFullscreen) document.exitFullscreen();
       }
     });
-
-    function updateOrientationButton() {
-      const isLandscape = appContainer.classList.contains('landscape');
-      btnOrientation.textContent = isLandscape ? '↕' : '↔';
-      btnOrientation.title = isLandscape ? 'Cambiar a modo vertical' : 'Cambiar a modo horizontal';
-      btnOrientation.setAttribute('aria-label', btnOrientation.title);
-    }
-
-    btnOrientation.addEventListener('click', async () => {
-      const isLandscape = appContainer.classList.toggle('landscape');
-      updateOrientationButton();
-      if (isLandscape && screen.orientation?.lock) {
-        try { await screen.orientation.lock('landscape'); } catch (error) { /* El navegador puede bloquearlo fuera de pantalla completa. */ }
-      } else if (!isLandscape && screen.orientation?.unlock) {
-        screen.orientation.unlock();
-      }
-    });
-
-    updateOrientationButton();
 
     // METADATOS Y LECTURA
     function createCoverBlobUrl(coverData) {

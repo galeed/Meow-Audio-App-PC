@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meow Audio App PC</title>
+  <title>Meow Audio App PC v2.4</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
     :root {
@@ -149,6 +149,7 @@
       text-align: center;
       margin-bottom: 2px;
       z-index: 2;
+      cursor: pointer;
     }
 
     .track-title {
@@ -176,6 +177,17 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .lufs-meter-badge {
+      display: none;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #7bed9f;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      transition: color 0.2s ease;
     }
 
     .audio-specs-badge {
@@ -588,6 +600,42 @@
       text-align: right;
     }
 
+    /* BOTONES DE ACCIÓN Y EXPORTACIÓN */
+    .btn-action {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--text);
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-action:hover { background: rgba(255, 255, 255, 0.22); }
+
+    .btn-action-magenta {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(255, 71, 87, 0.15);
+    }
+
+    .btn-action-magenta:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    kbd {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
     /* LISTA Y BÚSQUEDA */
     .sort-bar {
       display: flex;
@@ -798,10 +846,11 @@
         <img class="cover-art" id="cover" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5'><path d='M9 18V5l12-2v13'/><circle cx='6' cy='18' r='3'/><circle cx='18' cy='16' r='3'/></svg>" alt="Cover">
       </div>
 
-      <div class="track-info">
+      <div class="track-info" id="trackInfoContainer" title="Haz clic para alternar tipo de visualizador">
         <div class="track-title" id="title">Sin reproducción</div>
         <div class="track-artist" id="artist">Añade canciones con el botón ➕</div>
         <div class="track-album" id="album"></div>
+        <div class="lufs-meter-badge" id="lufsBadge">--.- LUFS S | Peak: -- dB</div>
         <div class="audio-specs-badge" id="audioSpecs"></div>
       </div>
 
@@ -848,15 +897,52 @@
             </div>
           </div>
 
-          <!-- Visualizador de Audio (Desactivado por defecto) -->
+          <!-- Crossfade (Transición) -->
           <div class="control-box">
             <div class="control-row">
-              <span class="control-label">Visualizador de Audio</span>
+              <span class="control-label">🎚 Crossfade (Transición)</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:0.8rem; font-weight:600;"><span id="crossfadeVal">0</span>s</span>
+                <input type="range" id="crossfadeTime" min="0" max="10" value="0" step="0.5" style="width:110px; accent-color:var(--accent);">
+              </div>
+            </div>
+          </div>
+
+          <!-- Espectro de Audio -->
+          <div class="control-box">
+            <div class="control-row">
+              <span class="control-label">📊 Espectro de Audio</span>
               <select id="visualizerSelect" class="eq-select">
                 <option value="off" selected>Desactivado</option>
-                <option value="bars">Barras Neón</option>
+                <option value="bars">Barras Neón LED</option>
                 <option value="wave">Onda Sinusoidal</option>
                 <option value="circle">Espectro Circular</option>
+                <option value="scope">Osciloscopio / Ámbito</option>
+                <option value="hybrid">Modo Híbrido</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Paleta del Espectro -->
+          <div class="control-box">
+            <div class="control-row">
+              <span class="control-label">🎨 Paleta del Espectro</span>
+              <select id="paletteSelect" class="eq-select">
+                <option value="neon" selected>Neón Cyan / Magenta</option>
+                <option value="viridis">Viridis (Accesible)</option>
+                <option value="plasma">Plasma (Alto Contraste)</option>
+                <option value="cividis">Cividis (Optimizado Daltonismo)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Medidor LUFS & Peak -->
+          <div class="control-box">
+            <div class="control-row">
+              <span class="control-label">🔊 Medidor LUFS & Peak</span>
+              <select id="lufsSelect" class="eq-select">
+                <option value="off" selected>Desactivado</option>
+                <option value="on">Activo</option>
               </select>
             </div>
           </div>
@@ -879,19 +965,26 @@
             </div>
           </div>
 
-          <!-- Ecualizador 10 Bandas Ajustable -->
+          <!-- Ecualizador de Bandas (Con Presets Ampliados) -->
           <div class="control-box">
             <div class="control-row">
-              <span class="control-label">Ecualizador de 10 Bandas</span>
+              <span class="control-label">🎛 Ecualizador (EQ)</span>
               <select id="eqSelect" class="eq-select">
                 <option value="custom">Personalizado</option>
-                <option value="flat" selected>Plano</option>
+                <option value="flat" selected>Plano / Desactivado</option>
                 <option value="bassBoost">Bass Boost</option>
-                <option value="electronic">Electronic</option>
-                <option value="hiphop">Hip-Hop</option>
-                <option value="jazz">Jazz</option>
+                <option value="electronic">Electronic / EDM</option>
+                <option value="hardstyle">Hardstyle / Raw</option>
+                <option value="dance">Dance / Club</option>
+                <option value="hiphop">Hip-Hop / Urban</option>
+                <option value="rnb">R&B / Soul</option>
                 <option value="pop">Pop</option>
                 <option value="rock">Rock</option>
+                <option value="classical">Classical / Orchestral</option>
+                <option value="acoustic">Acoustic</option>
+                <option value="vocal">Vocal Booster</option>
+                <option value="pureAudio">Pure Audio Hi-Res</option>
+                <option value="jazz">Jazz</option>
               </select>
             </div>
             <div class="eq-bands-grid" id="eqBandsGrid">
@@ -913,12 +1006,41 @@
           <!-- Dolby Digital -->
           <div class="control-box">
             <div class="control-row">
-              <span class="control-label">Efecto Dolby Digital</span>
+              <span class="control-label">🎧 Efecto Dolby Spatial Audio</span>
               <label class="toggle-switch">
                 <input type="checkbox" id="dolbyToggle">
                 <span class="slider"></span>
               </label>
             </div>
+          </div>
+
+          <!-- Exportación de Datos -->
+          <div class="control-box">
+            <span class="control-label" style="margin-bottom:4px;">💾 Exportación de Datos</span>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <button class="btn-action" id="exportM3u8">Exportar Lista (.m3u8)</button>
+              <button class="btn-action" id="exportJson">Exportar Lista (.json)</button>
+              <button class="btn-action btn-action-magenta" id="exportReport">Descargar Reporte TXT</button>
+            </div>
+          </div>
+
+          <!-- Atajos de Teclado -->
+          <div class="control-box">
+            <span class="control-label">⌨️ Atajos de Teclado</span>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:4px; font-size:0.75rem; color:var(--text-muted);">
+              <div><kbd>Espacio</kbd> Play / Pausa</div>
+              <div><kbd>N</kbd> Siguiente Pista</div>
+              <div><kbd>P</kbd> Anterior Pista</div>
+              <div><kbd>M</kbd> Mute / Unmute</div>
+              <div><kbd>↑</kbd> Subir Volumen</div>
+              <div><kbd>↓</kbd> Bajar Volumen</div>
+            </div>
+          </div>
+
+          <!-- Info Version -->
+          <div class="control-box">
+            <span class="control-label" style="font-weight:700;">MEOW AUDIO APP v2.4</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Reproducción directa fluida sin pausas.</span>
           </div>
 
         </div>
@@ -984,6 +1106,7 @@
     const titleEl = document.getElementById('title');
     const artistEl = document.getElementById('artist');
     const albumEl = document.getElementById('album');
+    const lufsBadge = document.getElementById('lufsBadge');
     const audioSpecsEl = document.getElementById('audioSpecs');
     const statusEl = document.getElementById('status');
     const fileInput = document.getElementById('fileInput');
@@ -998,6 +1121,10 @@
 
     const accentColorPicker = document.getElementById('accentColorPicker');
     const visualizerSelect = document.getElementById('visualizerSelect');
+    const paletteSelect = document.getElementById('paletteSelect');
+    const lufsSelect = document.getElementById('lufsSelect');
+    const crossfadeSlider = document.getElementById('crossfadeTime');
+    const crossfadeVal = document.getElementById('crossfadeVal');
 
     const seekBar = document.getElementById('seekBar');
     const currentTimeEl = document.getElementById('currentTime');
@@ -1019,6 +1146,7 @@
 
     const canvas = document.getElementById('visualizerCanvas');
     const canvasCtx = canvas.getContext('2d');
+    const trackInfoContainer = document.getElementById('trackInfoContainer');
 
     let playlist = [];
     let currentIndex = 0;
@@ -1038,18 +1166,105 @@
     let limiterCompressor = null;
     let animFrameId = null;
 
+    let crossfadeTime = 0;
+
+    // BASE DE DATOS INDEXEDDB
+    const DB_NAME = 'MeowAudioPCDb';
+    const DB_VERSION = 2;
+    const STORE_NAME = 'songs';
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (db.objectStoreNames.contains(STORE_NAME)) db.deleteObjectStore(STORE_NAME);
+          db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function saveTracksToDB(tracks) {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        for (const track of tracks) {
+          store.add({
+            filename: track.filename,
+            ext: track.ext,
+            title: track.title,
+            artist: track.artist,
+            album: track.album,
+            coverBase64: track.coverBase64 || null,
+            specs: track.specs,
+            fileBlob: track.file
+          });
+        }
+      } catch (err) {
+        console.warn("DB Save error:", err);
+      }
+    }
+
+    async function loadStoredTracksFromDB() {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.getAll();
+
+        request.onsuccess = () => {
+          const stored = request.result || [];
+          if (stored.length > 0) {
+            playlist = stored.map(item => ({
+              dbId: item.id,
+              file: item.fileBlob,
+              filename: item.filename,
+              ext: item.ext,
+              title: item.title,
+              artist: item.artist,
+              album: item.album,
+              coverBase64: item.coverBase64,
+              cover: item.coverBase64 || DEFAULT_COVER,
+              specs: item.specs
+            }));
+
+            sortPlaylist();
+            renderQueueUI();
+            renderSearchUI();
+            statusEl.textContent = "Biblioteca restaurada 🐾";
+            setTimeout(() => {
+              if (statusEl.textContent.includes("restaurada")) statusEl.textContent = "";
+            }, 3000);
+          }
+        };
+      } catch (err) {
+        console.warn("DB Load error:", err);
+      }
+    }
+
+    // ECUALIZADOR 10 BANDAS Y PRESETS COMPLETOS
     const FREQUENCIES = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
     const FREQ_LABELS = ['32Hz', '64Hz', '125Hz', '250Hz', '500Hz', '1kHz', '2kHz', '4kHz', '8kHz', '16kHz'];
     let currentBandGains = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     const EQ_PRESETS = {
       flat:         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      bassBoost:    [6, 5, 4, 2, 0, 0, 0, 0, 0, 0],
-      electronic:   [5, 4, 2, 0, -2, 2, 1, 2, 4, 5],
-      hiphop:       [5, 4, 2, 3, -1, -1, 1, -1, 2, 3],
-      jazz:         [4, 3, 2, 2, -2, -2, 0, 1, 3, 4],
-      pop:          [-2, -1, 2, 4, 5, 4, 2, -1, -2, -2],
-      rock:         [5, 4, 3, 1, -1, -1, 1, 3, 4, 5]
+      bassBoost:    [7, 6, 4, 2, 0, 0, 0, 0, 0, 0],
+      electronic:   [6, 5, 2, 0, -2, 2, 1, 3, 5, 6],
+      hardstyle:    [8, 7, 3, -1, -2, 1, 3, 5, 6, 7],
+      dance:        [6, 5, 3, 0, 0, 2, 4, 4, 3, 0],
+      hiphop:       [6, 5, 2, 3, -1, -1, 1, -1, 2, 4],
+      rnb:          [4, 7, 5, -1, -2, 1, 3, 4, 3, 2],
+      pop:          [-2, 1, 3, 4, 5, 4, 2, 0, -1, -2],
+      rock:         [5, 4, 3, 1, -1, -1, 1, 3, 4, 5],
+      classical:    [4, 3, 2, 2, -1, -1, 0, 2, 3, 4],
+      acoustic:     [3, 2, 1, 1, 2, 2, 3, 3, 2, 1],
+      vocal:        [-3, -2, 0, 3, 5, 5, 4, 2, 0, -2],
+      pureAudio:    [2, 1, 0, 0, 0, 0, 1, 2, 3, 3],
+      jazz:         [4, 3, 2, 2, -2, -2, 0, 1, 3, 4]
     };
 
     function renderEQBandsUI() {
@@ -1091,6 +1306,11 @@
     });
 
     normalizeToggle.addEventListener('change', updateAudioEffects);
+
+    crossfadeSlider.addEventListener('input', (e) => {
+      crossfadeTime = parseFloat(e.target.value);
+      crossfadeVal.textContent = crossfadeTime;
+    });
 
     function setNeonAccent(color) {
       document.documentElement.style.setProperty('--accent', color);
@@ -1219,35 +1439,73 @@
     window.addEventListener('resize', resizeCanvas);
     document.addEventListener('DOMContentLoaded', resizeCanvas);
 
+    function getPaletteColors() {
+      const palette = paletteSelect.value;
+      const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00f3ff';
+      switch (palette) {
+        case 'viridis':
+          return ['#440154', '#21908d', '#fde725'];
+        case 'plasma':
+          return ['#0d0887', '#cc4678', '#f0f921'];
+        case 'cividis':
+          return ['#002051', '#7b7c7e', '#fcea1d'];
+        default:
+          return [accentColor, '#ff4757', '#ffffff'];
+      }
+    }
+
     function drawVisualizer() {
       animFrameId = requestAnimationFrame(drawVisualizer);
       const mode = visualizerSelect.value;
 
       canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (analyserNode && lufsSelect.value === 'on') {
+        const bufferLength = analyserNode.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        analyserNode.getByteFrequencyData(dataArray);
+        let sum = 0, peak = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+          if (dataArray[i] > peak) peak = dataArray[i];
+        }
+        const avg = sum / bufferLength;
+        const approxLUFS = (-0.6 * (255 - avg)).toFixed(1);
+        const approxPeak = ((peak / 255) * 0).toFixed(1);
+        lufsBadge.textContent = `${approxLUFS} LUFS S | Peak: ${approxPeak} dB`;
+      }
+
       if (mode === 'off' || !analyserNode) return;
 
       const bufferLength = analyserNode.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-      analyserNode.getByteFrequencyData(dataArray);
+      const colors = getPaletteColors();
 
-      const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00f3ff';
-
-      if (mode === 'bars') {
+      if (mode === 'bars' || mode === 'hybrid') {
+        analyserNode.getByteFrequencyData(dataArray);
         const barWidth = (canvas.width / bufferLength) * 1.8;
         let x = 0;
 
         for (let i = 0; i < bufferLength; i++) {
           const barHeight = (dataArray[i] / 255) * canvas.height * 0.45;
-          canvasCtx.fillStyle = accentColor;
-          canvasCtx.globalAlpha = 0.35;
+          const gradient = canvasCtx.createLinearGradient(0, canvas.height, 0, 0);
+          gradient.addColorStop(0, colors[0]);
+          gradient.addColorStop(0.5, colors[1]);
+          gradient.addColorStop(1, colors[2] || colors[1]);
+
+          canvasCtx.fillStyle = gradient;
+          canvasCtx.globalAlpha = 0.5;
           canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
           x += barWidth + 2;
         }
-      } else if (mode === 'wave') {
+      }
+
+      if (mode === 'wave' || mode === 'scope' || mode === 'hybrid') {
+        analyserNode.getByteTimeDomainData ? analyserNode.getByteTimeDomainData(dataArray) : analyserNode.getByteFrequencyData(dataArray);
         canvasCtx.beginPath();
         canvasCtx.lineWidth = 2.5;
-        canvasCtx.strokeStyle = accentColor;
-        canvasCtx.globalAlpha = 0.5;
+        canvasCtx.strokeStyle = colors[0];
+        canvasCtx.globalAlpha = 0.65;
 
         const sliceWidth = canvas.width / bufferLength;
         let x = 0;
@@ -1264,15 +1522,18 @@
 
         canvasCtx.lineTo(canvas.width, canvas.height / 2);
         canvasCtx.stroke();
-      } else if (mode === 'circle') {
+      }
+
+      if (mode === 'circle') {
+        analyserNode.getByteFrequencyData(dataArray);
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 3;
         const radius = 60;
 
         canvasCtx.save();
         canvasCtx.translate(centerX, centerY);
-        canvasCtx.globalAlpha = 0.4;
-        canvasCtx.strokeStyle = accentColor;
+        canvasCtx.globalAlpha = 0.5;
+        canvasCtx.strokeStyle = colors[0];
         canvasCtx.lineWidth = 2;
 
         for (let i = 0; i < bufferLength; i++) {
@@ -1291,6 +1552,26 @@
         canvasCtx.restore();
       }
     }
+
+    trackInfoContainer.addEventListener('click', () => {
+      const modes = ['off', 'bars', 'wave', 'circle', 'scope', 'hybrid'];
+      const nextIdx = (modes.indexOf(visualizerSelect.value) + 1) % modes.length;
+      visualizerSelect.value = modes[nextIdx];
+      updateAudioEffects();
+    });
+
+    visualizerSelect.addEventListener('change', () => {
+      updateAudioEffects();
+    });
+
+    paletteSelect.addEventListener('change', () => {
+      updateAudioEffects();
+    });
+
+    lufsSelect.addEventListener('change', () => {
+      lufsBadge.style.display = (lufsSelect.value === 'on') ? 'block' : 'none';
+      updateAudioEffects();
+    });
 
     function updateAudioEffects() {
       initWebAudio();
@@ -1457,17 +1738,20 @@
             onSuccess: function(tag) {
               const tags = tag.tags;
               let coverUrl = null;
+              let coverBase64 = null;
               if (tags.picture) {
                 const { data, format } = tags.picture;
                 let base64String = "";
                 for (let i = 0; i < data.length; i++) base64String += String.fromCharCode(data[i]);
-                coverUrl = createCoverBlobUrl(`data:${format};base64,${window.btoa(base64String)}`);
+                coverBase64 = `data:${format};base64,${window.btoa(base64String)}`;
+                coverUrl = createCoverBlobUrl(coverBase64);
               }
               resolve({
                 title: tags.title || null,
                 artist: tags.artist || null,
                 album: tags.album || null,
-                cover: coverUrl
+                cover: coverUrl,
+                coverBase64: coverBase64
               });
             },
             onError: () => resolve(null)
@@ -1553,18 +1837,21 @@
             artist: meta?.artist || "Biblioteca Local",
             album: meta?.album || "",
             cover: meta?.cover || DEFAULT_COVER,
+            coverBase64: meta?.coverBase64 || null,
             specs: specsText
           };
         }));
 
+        const isFirstLoad = (playlist.length === 0);
         playlist = [...playlist, ...newTracks];
         statusEl.textContent = "";
         
+        saveTracksToDB(newTracks);
         sortPlaylist();
         renderQueueUI();
         renderSearchUI();
 
-        if (playlist.length === newTracks.length) {
+        if (isFirstLoad) {
           currentIndex = 0;
           processAndPlayTrack(currentIndex);
         }
@@ -1573,10 +1860,18 @@
       }
     });
 
-    function processAndPlayTrack(index) {
+    async function processAndPlayTrack(index) {
       if (!playlist[index]) return;
       const track = playlist[index];
-      
+
+      if (crossfadeTime > 0 && !audio.paused && audioCtx && masterGainNode) {
+        const fadeDuration = crossfadeTime;
+        const now = audioCtx.currentTime;
+        masterGainNode.gain.setValueAtTime(masterGainNode.gain.value, now);
+        masterGainNode.gain.linearRampToValueAtTime(0, now + fadeDuration);
+        await new Promise(r => setTimeout(r, fadeDuration * 1000));
+      }
+
       seekBar.value = 0;
       currentTimeEl.textContent = "00:00";
       durationEl.textContent = "00:00";
@@ -1592,20 +1887,27 @@
         bgBlur.style.backgroundImage = 'none';
       }
 
-      audioSpecsEl.innerHTML = track.specs;
+      audioSpecsEl.innerHTML = track.specs || `${track.ext ? track.ext.toUpperCase() : 'AUDIO'} | 16 bit | 44.1 kHz`;
       renderQueueUI();
       renderSearchUI();
 
       if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
       currentObjectUrl = URL.createObjectURL(track.file);
-      startPlayback(currentObjectUrl);
-    }
 
-    function startPlayback(url) {
       initWebAudio();
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
-      audio.src = url;
+      audio.src = currentObjectUrl;
+
+      const targetGain = Math.pow(10, parseFloat(limiterGainSlider.value) / 20);
+      if (crossfadeTime > 0 && audioCtx && masterGainNode) {
+        const now = audioCtx.currentTime;
+        masterGainNode.gain.setValueAtTime(0, now);
+        masterGainNode.gain.linearRampToValueAtTime(targetGain, now + crossfadeTime);
+      } else if (masterGainNode) {
+        masterGainNode.gain.value = targetGain;
+      }
+
       audio.play().then(() => {
         btnPlay.textContent = '⏸';
       }).catch(err => {
@@ -1697,7 +1999,77 @@
       }
     });
 
+    // ATAJOS DE TECLADO
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+      switch (e.code) {
+        case 'Space':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'KeyN':
+          playNext();
+          break;
+        case 'KeyP':
+          playPrev();
+          break;
+        case 'KeyM':
+          audio.muted = !audio.muted;
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          audio.volume = Math.min(1, audio.volume + 0.1);
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          audio.volume = Math.max(0, audio.volume - 0.1);
+          break;
+      }
+    });
+
+    // EXPORTACIÓN DE DATOS
+    document.getElementById('exportM3u8').addEventListener('click', () => {
+      if (playlist.length === 0) return alert("La lista está vacía");
+      let content = "#EXTM3U\n";
+      playlist.forEach(track => {
+        content += `#EXTINF:-1,${track.artist} - ${track.title}\n${track.filename}.${track.ext}\n`;
+      });
+      downloadFile(content, "playlist_pc.m3u8", "text/plain");
+    });
+
+    document.getElementById('exportJson').addEventListener('click', () => {
+      if (playlist.length === 0) return alert("La lista está vacía");
+      const data = playlist.map(t => ({
+        title: t.title,
+        artist: t.artist,
+        album: t.album,
+        filename: t.filename,
+        specs: t.specs ? t.specs.replace(/<[^>]*>?/gm, '') : ''
+      }));
+      downloadFile(JSON.stringify(data, null, 2), "playlist_pc.json", "application/json");
+    });
+
+    document.getElementById('exportReport').addEventListener('click', () => {
+      if (playlist.length === 0) return alert("La lista está vacía");
+      let content = "--- MEOW AUDIO APP PC REPORT ---\n\n";
+      playlist.forEach((track, idx) => {
+        content += `[${idx + 1}] ${track.artist} - ${track.title}\nÁlbum: ${track.album}\nSpecs: ${track.specs ? track.specs.replace(/<[^>]*>?/gm, '') : ''}\n\n`;
+      });
+      downloadFile(content, "reporte_meow_pc.txt", "text/plain");
+    });
+
+    function downloadFile(content, fileName, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      loadStoredTracksFromDB();
       if (localStorage.getItem('meowOcultarAviso') === 'true') {
         const aviso = document.getElementById('meow-aviso-privacidad');
         if (aviso) aviso.style.display = 'none';

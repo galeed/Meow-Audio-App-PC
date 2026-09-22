@@ -1,39 +1,60 @@
-// Configuración de Supabase
-const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
-const SUPABASE_KEY = 'TU-ANON-PUBLIC-KEY';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// Función auxiliar para generar un código único de 6 dígitos
-function generateTransferCode() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-self.addEventListener('fetch', (event) => {
-  // Evitar que el Service Worker interfiera con blobs locales de música o peticiones parciales de audio
-  if (event.request.url.startsWith('blob:') || event.request.headers.get('range')) {
-    return; // Deja que el navegador maneje el archivo local de forma nativa
-  }
-
-});
-
-
-const CACHE_NAME = 'reproductor-unico-v1';
-const ASSETS = [
+const CACHE_NAME = 'meow-audio-pc-v2.4';
+const ASSETS_TO_CACHE = [
   './',
-  'index.html'
+  './index.html',
+  './main.js',
+  './sw.js',
+  './package.json',
+  './app-icon.ico',
+  'https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js'
 ];
 
-// Instalar y guardar el HTML único
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+// Instalación: Guardar archivos esenciales en la caché local
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('[SW] Guardando recursos en caché...');
+      return cache.addAll(ASSETS_TO_CACHE);
+    }).then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-// Servir el HTML desde la caché si no hay internet
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(response => response || fetch(e.request))
+// Activación: Limpieza de cachés antiguas
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            console.log('[SW] Borrando caché obsoleta:', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+// Intercepción de solicitudes: Estrategia Cache First con respaldo de red
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(event.request).then((networkResponse) => {
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+          return networkResponse;
+        }
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
+        });
+        return networkResponse;
+      });
+    }).catch(() => {
+      // Fallback básico para navegación sin conexión
+      return caches.match('./index.html');
+    })
   );
 });

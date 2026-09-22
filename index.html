@@ -29,9 +29,11 @@
       overflow: hidden;
       background-color: var(--bg);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       color: var(--text);
+      gap: 16px;
     }
 
     .bg-blur {
@@ -44,11 +46,12 @@
       z-index: -1;
     }
 
+    /* CONTENEDOR PRINCIPAL DEL REPRODUCTOR Y PANELES */
     .app-container {
       width: 94%;
       max-width: 1100px;
-      height: 92vh;
-      max-height: 760px;
+      height: 82vh;
+      max-height: 680px;
       background: var(--card-bg);
       backdrop-filter: blur(30px) saturate(160%);
       -webkit-backdrop-filter: blur(30px) saturate(160%);
@@ -57,7 +60,6 @@
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
       display: grid;
       grid-template-columns: 400px 1fr;
-      grid-template-rows: 1fr auto;
       gap: 0;
       padding: 20px;
       position: relative;
@@ -65,6 +67,7 @@
       transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.4s ease;
     }
 
+    /* ESTADO INICIAL / HOME: REPRODUCTOR CENTRADO */
     .app-container.collapsed {
       grid-template-columns: 1fr 0px;
       max-width: 580px;
@@ -128,7 +131,7 @@
       border-radius: 18px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.22);
-      transition: transform 0.3s ease, max-width 0.4s ease, width 0.4s ease, height 0.4s ease;
+      transition: transform 0.3s ease, max-width 0.4s ease;
       z-index: 2;
     }
 
@@ -282,7 +285,7 @@
     .btn-sub { font-size: 1.15rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
 
-    /* FILA DE ACCIONES INFERIOR DEL REPRODUCTOR (AÑADIR PISTA IZQ / PANTALLA COMPLETA DER) */
+    /* FILA INFERIOR DE ACCIONES: AÑADIR (IZQ) Y PANTALLA COMPLETA (DER) */
     .action-buttons-row {
       display: flex;
       justify-content: space-between;
@@ -293,13 +296,13 @@
     }
 
     .action-circle-btn {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.25);
       color: var(--text);
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -378,48 +381,14 @@
       overflow: hidden;
     }
 
-    .app-container.collapsed.skin-modern .track-title {
-      font-size: 1.9rem;
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
+    .app-container.collapsed.skin-modern .track-title { font-size: 1.9rem; }
+    .app-container.collapsed.skin-modern .track-artist { font-size: 1.35rem; }
+    .app-container.collapsed.skin-modern .track-album { font-size: 1.1rem; }
+    .app-container.collapsed.skin-modern .progress-container { grid-area: progress; width: 100%; }
+    .app-container.collapsed.skin-modern .controls { grid-area: controls; justify-content: center; gap: 36px; }
+    .app-container.collapsed.skin-modern .action-buttons-row { grid-area: actions; }
 
-    .app-container.collapsed.skin-modern .track-artist {
-      font-size: 1.35rem;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-    }
-
-    .app-container.collapsed.skin-modern .track-album {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      opacity: 0.85;
-      margin-bottom: 10px;
-    }
-
-    .app-container.collapsed.skin-modern .audio-specs-badge {
-      justify-content: flex-start;
-      font-size: 1.05rem;
-    }
-
-    .app-container.collapsed.skin-modern .hires-icon { height: 20px; }
-
-    .app-container.collapsed.skin-modern .progress-container {
-      grid-area: progress;
-      width: 100%;
-    }
-
-    .app-container.collapsed.skin-modern .controls {
-      grid-area: controls;
-      justify-content: center;
-      gap: 36px;
-    }
-
-    .app-container.collapsed.skin-modern .action-buttons-row {
-      grid-area: actions;
-    }
-
-    /* SECCIÓN CENTRAL Y BARRA DE NAVEGACIÓN INFERIOR */
+    /* SECCIÓN CENTRAL DE PANELES */
     .content-section {
       padding: 0 0 0 20px;
       display: flex;
@@ -462,7 +431,7 @@
       flex-shrink: 0;
     }
 
-    /* CONFIGURACIÓN Y AUDIO AVANZADO */
+    /* AJUSTES Y DIVERSIÓN AUDIO */
     .settings-group {
       display: flex;
       flex-direction: column;
@@ -574,7 +543,7 @@
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(18px); }
 
-    /* CONTROLES DEL ECUALIZADOR 10 BANDAS */
+    /* ECUALIZADOR 10 BANDAS */
     .eq-bands-grid {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
@@ -600,18 +569,9 @@
       cursor: pointer;
     }
 
-    .eq-band-label {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-    }
+    .eq-band-label { font-size: 0.65rem; color: var(--text-muted); }
+    .eq-band-val { font-size: 0.65rem; color: var(--accent); font-weight: bold; }
 
-    .eq-band-val {
-      font-size: 0.65rem;
-      color: var(--accent);
-      font-weight: bold;
-    }
-
-    /* LIMITADOR Y GAIN */
     .limiter-slider-container {
       display: flex;
       align-items: center;
@@ -647,7 +607,6 @@
       text-align: right;
     }
 
-    /* BOTONES DE ACCIÓN Y EXPORTACIÓN */
     .btn-action {
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.25);
@@ -668,10 +627,7 @@
       background: rgba(255, 71, 87, 0.15);
     }
 
-    .btn-action-magenta:hover {
-      background: var(--accent);
-      color: #000;
-    }
+    .btn-action-magenta:hover { background: var(--accent); color: #000; }
 
     kbd {
       background: rgba(255, 255, 255, 0.15);
@@ -763,21 +719,8 @@
       padding-right: 6px;
     }
 
-    .playlist-item-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .playlist-item-artist {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .playlist-item-title { font-size: 0.85rem; font-weight: 600; }
+    .playlist-item-artist { font-size: 0.76rem; color: var(--text-muted); }
 
     .empty-state-msg {
       color: var(--text-muted);
@@ -786,20 +729,21 @@
       text-align: center;
     }
 
-    /* BARRA NAVEGACIÓN INFERIOR PANORÁMICA */
-    .bottom-nav-bar {
-      grid-column: 1 / -1;
+    /* BARRA DE NAVEGACIÓN INDEPENDIENTE FUERA DEL REPRODUCTOR (ISLAND DOCK) */
+    .outer-bottom-nav {
+      width: 94%;
+      max-width: 580px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(25px) saturate(160%);
+      -webkit-backdrop-filter: blur(25px) saturate(160%);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 8px 12px;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      background: rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      padding: 8px 16px;
-      margin-top: 14px;
-      z-index: 10;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      z-index: 100;
     }
 
     .bottom-nav-btn {
@@ -811,10 +755,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px 20px;
-      border-radius: 12px;
-      transition: background 0.2s, color 0.2s, transform 0.1s;
-      opacity: 0.6;
+      padding: 8px 24px;
+      border-radius: 18px;
+      transition: all 0.2s ease;
+      opacity: 0.55;
     }
 
     .bottom-nav-btn:hover {
@@ -825,7 +769,9 @@
     .bottom-nav-btn.active {
       opacity: 1;
       color: var(--accent);
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     /* AVISO GATUNO */
@@ -872,7 +818,8 @@
 
   <div class="bg-blur" id="bgBlur"></div>
 
-  <div class="app-container" id="appContainer">
+  <!-- CONTENEDOR PRINCIPAL DEL REPRODUCTOR (COLAPSADO DE DEFAULT) -->
+  <div class="app-container collapsed" id="appContainer">
     <!-- SECCIÓN IZQUIERDA: REPRODUCTOR -->
     <div class="player-section" id="playerSection">
       <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
@@ -908,7 +855,7 @@
         <button class="btn btn-sub" id="btnRepeat" title="Repetir">🔁</button>
       </div>
 
-      <!-- FILA CON BOTÓN AÑADIR (IZQ) Y PANTALLA COMPLETA (DER) -->
+      <!-- BOTÓN AÑADIR (IZQUIERDA) Y PANTALLA COMPLETA (DERECHA) -->
       <div class="action-buttons-row">
         <div class="action-circle-btn" title="Añadir canciones">
           ➕
@@ -919,7 +866,7 @@
       </div>
     </div>
 
-    <!-- SECCIÓN DERECHA: PANEL DE CONTENIDOS Y PESTAÑAS -->
+    <!-- SECCIÓN DERECHA: PANELES DE CONTENIDO -->
     <div class="content-section">
       <h1 class="app-title-main">Meow Audio App PC 🐈</h1>
       
@@ -1011,7 +958,7 @@
             </div>
           </div>
 
-          <!-- Ecualizador de Bandas (Con Presets Ampliados) -->
+          <!-- Ecualizador de Bandas -->
           <div class="control-box">
             <div class="control-row">
               <span class="control-label">🎛 Ecualizador (EQ)</span>
@@ -1033,9 +980,7 @@
                 <option value="jazz">Jazz</option>
               </select>
             </div>
-            <div class="eq-bands-grid" id="eqBandsGrid">
-              <!-- Renderizado dinámico de los 10 deslizadores -->
-            </div>
+            <div class="eq-bands-grid" id="eqBandsGrid"></div>
           </div>
 
           <!-- Skins -->
@@ -1092,8 +1037,8 @@
         </div>
       </div>
 
-      <!-- Pestaña 2: Cola de Reproducción (Default) -->
-      <div class="tab-pane active" id="paneQueue">
+      <!-- Pestaña 2: Cola de Reproducción -->
+      <div class="tab-pane" id="paneQueue">
         <div class="pane-header">Cola de Reproducción</div>
         <div class="sort-bar">
           <span class="sort-label">Ordenar lista por:</span>
@@ -1115,14 +1060,14 @@
       </div>
 
     </div>
+  </div>
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR A LO LARGO DE TODO EL CONTENEDOR -->
-    <div class="bottom-nav-bar">
-      <button class="bottom-nav-btn" id="btnTabHome" title="Inicio / Reproductor">🏠</button>
-      <button class="bottom-nav-btn active" id="btnTabQueue" title="Cola de reproducción">☰</button>
-      <button class="bottom-nav-btn" id="btnTabSearch" title="Buscar">🔍</button>
-      <button class="bottom-nav-btn" id="btnTabSettings" title="Configuración">⚙️</button>
-    </div>
+  <!-- BARRA DE NAVEGACIÓN INDEPENDIENTE UBICADA FUERA DEL REPRODUCTOR (ISLAND DOCK) -->
+  <div class="outer-bottom-nav">
+    <button class="bottom-nav-btn active" id="btnTabHome" title="Inicio / Reproductor">🏠</button>
+    <button class="bottom-nav-btn" id="btnTabQueue" title="Cola de reproducción">☰</button>
+    <button class="bottom-nav-btn" id="btnTabSearch" title="Buscar">🔍</button>
+    <button class="bottom-nav-btn" id="btnTabSettings" title="Configuración">⚙️</button>
   </div>
 
   <audio id="audio" preload="auto"></audio>
@@ -1482,14 +1427,10 @@
       const palette = paletteSelect.value;
       const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00f3ff';
       switch (palette) {
-        case 'viridis':
-          return ['#440154', '#21908d', '#fde725'];
-        case 'plasma':
-          return ['#0d0887', '#cc4678', '#f0f921'];
-        case 'cividis':
-          return ['#002051', '#7b7c7e', '#fcea1d'];
-        default:
-          return [accentColor, '#ff4757', '#ffffff'];
+        case 'viridis': return ['#440154', '#21908d', '#fde725'];
+        case 'plasma': return ['#0d0887', '#cc4678', '#f0f921'];
+        case 'cividis': return ['#002051', '#7b7c7e', '#fcea1d'];
+        default: return [accentColor, '#ff4757', '#ffffff'];
       }
     }
 
@@ -1599,13 +1540,8 @@
       updateAudioEffects();
     });
 
-    visualizerSelect.addEventListener('change', () => {
-      updateAudioEffects();
-    });
-
-    paletteSelect.addEventListener('change', () => {
-      updateAudioEffects();
-    });
+    visualizerSelect.addEventListener('change', updateAudioEffects);
+    paletteSelect.addEventListener('change', updateAudioEffects);
 
     lufsSelect.addEventListener('change', () => {
       lufsBadge.style.display = (lufsSelect.value === 'on') ? 'block' : 'none';

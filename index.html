@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meow Audio App PC</title>
+  <title>Meow Audio App PC v2.4</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
     :root {
@@ -47,16 +47,17 @@
     .app-container {
       width: 94%;
       max-width: 1100px;
-      height: 90vh;
-      max-height: 720px;
+      height: 92vh;
+      max-height: 760px;
       background: var(--card-bg);
       backdrop-filter: blur(30px) saturate(160%);
       -webkit-backdrop-filter: blur(30px) saturate(160%);
-      border-radius: 24px;
+      border-radius: 28px;
       border: 1px solid var(--card-border);
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
       display: grid;
-      grid-template-columns: 380px 1fr 64px;
+      grid-template-columns: 400px 1fr;
+      grid-template-rows: 1fr auto;
       gap: 0;
       padding: 20px;
       position: relative;
@@ -65,7 +66,7 @@
     }
 
     .app-container.collapsed {
-      grid-template-columns: 1fr 0px 64px;
+      grid-template-columns: 1fr 0px;
       max-width: 580px;
     }
 
@@ -77,7 +78,7 @@
 
     .app-container.collapsed .player-section {
       border-right: none;
-      padding-right: 20px;
+      padding-right: 0;
       margin: 0 auto;
       width: 100%;
     }
@@ -120,11 +121,11 @@
 
     .cover-art {
       width: 100%;
-      max-width: 230px;
+      max-width: 240px;
       aspect-ratio: 1 / 1;
       background: rgba(255, 255, 255, 0.08);
       object-fit: cover;
-      border-radius: 16px;
+      border-radius: 18px;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.22);
       transition: transform 0.3s ease, max-width 0.4s ease, width 0.4s ease, height 0.4s ease;
@@ -281,6 +282,47 @@
     .btn-sub { font-size: 1.15rem; opacity: 0.5; }
     .btn-sub.active { opacity: 1; color: var(--accent); }
 
+    /* FILA DE ACCIONES INFERIOR DEL REPRODUCTOR (AÑADIR PISTA IZQ / PANTALLA COMPLETA DER) */
+    .action-buttons-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 4px 6px 0 6px;
+      z-index: 2;
+    }
+
+    .action-circle-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--text);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .action-circle-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+    }
+
+    .action-circle-btn:active { transform: scale(0.95); }
+
+    .action-file-input {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
     /* SKIN MEOW MODERN */
     .app-container.collapsed.skin-modern {
       max-width: 920px;
@@ -289,12 +331,13 @@
     .app-container.collapsed.skin-modern .player-section {
       display: grid;
       grid-template-columns: 240px 1fr;
-      grid-template-rows: auto 1fr auto auto;
+      grid-template-rows: auto 1fr auto auto auto;
       grid-template-areas:
         "header header"
         "cover info"
         "progress progress"
-        "controls controls";
+        "controls controls"
+        "actions actions";
       align-items: center;
       justify-content: center;
       gap: 16px;
@@ -372,9 +415,13 @@
       gap: 36px;
     }
 
-    /* SECCIÓN CENTRAL Y DERECHA */
+    .app-container.collapsed.skin-modern .action-buttons-row {
+      grid-area: actions;
+    }
+
+    /* SECCIÓN CENTRAL Y BARRA DE NAVEGACIÓN INFERIOR */
     .content-section {
-      padding: 0 20px;
+      padding: 0 0 0 20px;
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -739,57 +786,46 @@
       text-align: center;
     }
 
-    /* BARRA LATERAL */
-    .sidebar-section {
-      border-left: 1px solid rgba(255, 255, 255, 0.12);
+    /* BARRA NAVEGACIÓN INFERIOR PANORÁMICA */
+    .bottom-nav-bar {
+      grid-column: 1 / -1;
       display: flex;
-      flex-direction: column;
+      justify-content: space-around;
       align-items: center;
-      justify-content: space-between;
-      padding-left: 12px;
-      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 8px 16px;
+      margin-top: 14px;
+      z-index: 10;
     }
 
-    .sidebar-top-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      width: 100%;
-    }
-
-    .sidebar-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: var(--text);
-      font-size: 1.15rem;
+    .bottom-nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.35rem;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      position: relative;
-      transition: background 0.2s, transform 0.1s, border-color 0.2s;
+      padding: 6px 20px;
+      border-radius: 12px;
+      transition: background 0.2s, color 0.2s, transform 0.1s;
+      opacity: 0.6;
     }
 
-    .sidebar-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: scale(1.05);
+    .bottom-nav-btn:hover {
+      opacity: 0.9;
+      background: rgba(255, 255, 255, 0.08);
     }
 
-    .sidebar-btn.active {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--accent);
+    .bottom-nav-btn.active {
+      opacity: 1;
       color: var(--accent);
-    }
-
-    .sidebar-file-input {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      opacity: 0;
-      cursor: pointer;
+      background: rgba(255, 255, 255, 0.12);
     }
 
     /* AVISO GATUNO */
@@ -871,9 +907,19 @@
         <button class="btn" id="btnNext" title="Siguiente">⏭</button>
         <button class="btn btn-sub" id="btnRepeat" title="Repetir">🔁</button>
       </div>
+
+      <!-- FILA CON BOTÓN AÑADIR (IZQ) Y PANTALLA COMPLETA (DER) -->
+      <div class="action-buttons-row">
+        <div class="action-circle-btn" title="Añadir canciones">
+          ➕
+          <input type="file" id="fileInput" class="action-file-input" multiple accept=".mp3,.wav,.ogg,.flac,.m4a,.aac,audio/*">
+        </div>
+
+        <button class="action-circle-btn" id="btnFullscreen" title="Pantalla completa">⛶</button>
+      </div>
     </div>
 
-    <!-- SECCIÓN CENTRAL: VISTAS Y PESTAÑAS -->
+    <!-- SECCIÓN DERECHA: PANEL DE CONTENIDOS Y PESTAÑAS -->
     <div class="content-section">
       <h1 class="app-title-main">Meow Audio App PC 🐈</h1>
       
@@ -1070,20 +1116,12 @@
 
     </div>
 
-    <!-- SECCIÓN DERECHA: BARRA LATERAL -->
-    <div class="sidebar-section">
-      <div class="sidebar-top-group">
-        <div class="sidebar-btn" title="Añadir canciones">
-          ➕
-          <input type="file" id="fileInput" class="sidebar-file-input" multiple accept=".mp3,.wav,.ogg,.flac,.m4a,.aac,audio/*">
-        </div>
-
-        <button class="sidebar-btn" id="btnTabSettings" title="Configuración">⚙️</button>
-        <button class="sidebar-btn active" id="btnTabQueue" title="Mostrar/Ocultar lista de canciones">☰</button>
-        <button class="sidebar-btn" id="btnTabSearch" title="Buscar">🔍</button>
-      </div>
-
-      <button class="sidebar-btn" id="btnFullscreen" title="Pantalla completa">⛶</button>
+    <!-- BARRA DE NAVEGACIÓN INFERIOR A LO LARGO DE TODO EL CONTENEDOR -->
+    <div class="bottom-nav-bar">
+      <button class="bottom-nav-btn" id="btnTabHome" title="Inicio / Reproductor">🏠</button>
+      <button class="bottom-nav-btn active" id="btnTabQueue" title="Cola de reproducción">☰</button>
+      <button class="bottom-nav-btn" id="btnTabSearch" title="Buscar">🔍</button>
+      <button class="bottom-nav-btn" id="btnTabSettings" title="Configuración">⚙️</button>
     </div>
   </div>
 
@@ -1135,6 +1173,7 @@
     const searchInput = document.getElementById('searchInput');
     const sortSelect = document.getElementById('sortSelect');
 
+    const btnTabHome = document.getElementById('btnTabHome');
     const btnTabSettings = document.getElementById('btnTabSettings');
     const btnTabQueue = document.getElementById('btnTabQueue');
     const btnTabSearch = document.getElementById('btnTabSearch');
@@ -1346,28 +1385,28 @@
     });
 
     function switchTab(activeBtn, activePane) {
-      if (appContainer.classList.contains('collapsed')) {
-        appContainer.classList.remove('collapsed');
+      const navButtons = [btnTabHome, btnTabSettings, btnTabQueue, btnTabSearch];
+      const panes = [paneSettings, paneQueue, paneSearch];
+
+      navButtons.forEach(b => b.classList.remove('active'));
+
+      if (activeBtn === btnTabHome) {
+        appContainer.classList.add('collapsed');
+        panes.forEach(p => p.classList.remove('active'));
+        btnTabHome.classList.add('active');
+        return;
       }
-      
-      [btnTabSettings, btnTabQueue, btnTabSearch].forEach(b => b.classList.remove('active'));
-      [paneSettings, paneQueue, paneSearch].forEach(p => p.classList.remove('active'));
-      
+
+      appContainer.classList.remove('collapsed');
+      panes.forEach(p => p.classList.remove('active'));
+
       activeBtn.classList.add('active');
       activePane.classList.add('active');
     }
 
+    btnTabHome.addEventListener('click', () => switchTab(btnTabHome, null));
     btnTabSettings.addEventListener('click', () => switchTab(btnTabSettings, paneSettings));
-    
-    btnTabQueue.addEventListener('click', () => {
-      if (paneQueue.classList.contains('active')) {
-        appContainer.classList.toggle('collapsed');
-        btnTabQueue.classList.toggle('active', !appContainer.classList.contains('collapsed'));
-      } else {
-        switchTab(btnTabQueue, paneQueue);
-      }
-    });
-
+    btnTabQueue.addEventListener('click', () => switchTab(btnTabQueue, paneQueue));
     btnTabSearch.addEventListener('click', () => {
       switchTab(btnTabSearch, paneSearch);
       renderSearchUI();

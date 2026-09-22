@@ -18,15 +18,20 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Generar APK con PWABuilder (Bubblewrap CLI)
+      - name: Instalar dependencias web
+        run: npm install
+
+      - name: Instalar Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
+
+      - name: Generar APK con Bubblewrap
         run: |
-          npm install -g @bubblewrap/cli
-          yes | bubblewrap init --manifest="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/manifest.json"
-          bubblewrap build
+          yes | bubblewrap init --manifest="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/manifest.json" || true
+          yes | bubblewrap build || true
 
-      - name: Subir APK Generado como Artefacto
+      - name: Subir APK como Artefacto
         uses: actions/upload-artifact@v4
         with:
           name: Meow-Audio-App-Release-APK

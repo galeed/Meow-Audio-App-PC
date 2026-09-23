@@ -1,0 +1,17 @@
+{
+  "name": "Meow Audio App PC",
+  "short_name": "MeowAudio",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1015",
+  "theme_color": "#00f3ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "app-icon.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon",
+      "purpose": "any maskable"
+    }
+  ]
+}

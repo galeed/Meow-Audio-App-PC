@@ -1,7 +1,8 @@
-const CACHE_NAME = 'meow-audio-app-pc';
+const CACHE_NAME = 'meow-audio-app-pc-v2.4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './manifest.json',
   './sw.js',
   './app-icon.ico',
   'https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js'

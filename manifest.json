@@ -1,11 +1,12 @@
 {
   "name": "Meow Audio App PC",
   "short_name": "MeowAudio",
-  "start_url": "./index.html",
+  "start_url": "https://galeed.github.io/Meow-Audio-App-PC/",
+  "scope": "https://galeed.github.io/Meow-Audio-App-PC/",
   "display": "standalone",
   "background_color": "#0f1015",
   "theme_color": "#00f3ff",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "icons": [
     {
       "src": "app-icon.ico",

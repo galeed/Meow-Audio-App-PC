@@ -1,59 +1,135 @@
-const CACHE_NAME = 'meow-audio-app-pc-v2.4';
-const ASSETS_TO_CACHE = [
+/* =========================================================
+   MEOW AUDIO APP — Service Worker v9.2
+   Estrategia:
+   - App shell (HTML/CSS/JS/iconos/fuentes): cache-first
+   - Recursos externos (CDN): stale-while-revalidate
+   - Audios locales: nunca se cachean (van por IndexedDB)
+   ========================================================= */
+
+const CACHE_NAME = 'meow-audio-v9.2';
+const RUNTIME_CACHE = 'meow-runtime-v9.2';
+
+// Archivos del app shell que SIEMPRE deben estar disponibles offline
+const APP_SHELL = [
   './',
   './index.html',
+  './styles.css',
+  './app.js',
   './manifest.json',
-  './sw.js',
-  './app-icon.ico',
-  'https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js'
+  './favicon-16x16.png',
+  './favicon-32x32.png',
+  './apple-touch-icon.png',
+  './icon-192.png',
+  './icon-192-maskable.png',
+  './icon-512.png',
+  './icon-512-maskable.png',
+  'https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js',
+  'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Share+Tech+Mono&display=swap'
 ];
 
-// Instalación: Guardar archivos esenciales en la caché local
+// Instalación: precachear el app shell
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Guardando recursos en caché...');
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        return Promise.all(
+          APP_SHELL.map((url) =>
+            cache.add(url).catch((err) => {
+              console.warn('[SW] No se pudo cachear:', url, err);
+            })
+          )
+        );
+      })
+      .then(() => self.skipWaiting())
   );
 });
 
-// Activación: Limpieza de cachés antiguas
+// Activación: limpiar cachés antiguas
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('[SW] Borrando caché obsoleta:', cache);
-            return caches.delete(cache);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME && key !== RUNTIME_CACHE)
+          .map((key) => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
   );
 });
 
-// Intercepción de solicitudes: Estrategia Cache First con respaldo de red
+// Fetch: estrategia según tipo de recurso
 self.addEventListener('fetch', (event) => {
+  const req = event.request;
+
+  if (req.method !== 'GET') return;
+
+  const url = new URL(req.url);
+
+  // Ignorar blob:, data:, chrome-extension:
+  if (!url.protocol.startsWith('http')) return;
+
+  // Nunca interceptar audios locales
+  if (req.destination === 'audio') return;
+
+  // Peticiones de navegación (HTML) → network-first con fallback
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put('./index.html', copy));
+          return res;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // Recursos del mismo origen → cache-first
+  if (url.origin === self.location.origin) {
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        if (cached) return cached;
+        return fetch(req)
+          .then((res) => {
+            if (!res || res.status !== 200) return res;
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(req, copy));
+            return res;
+          })
+          .catch(() => cached);
+      })
+    );
+    return;
+  }
+
+  // Recursos externos → stale-while-revalidate
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return networkResponse;
-      });
-    }).catch(() => {
-      // Fallback básico para navegación sin conexión
-      return caches.match('./index.html');
-    })
+    caches.open(RUNTIME_CACHE).then((cache) =>
+      cache.match(req).then((cached) => {
+        const fetchPromise = fetch(req)
+          .then((res) => {
+            if (res && res.status === 200) {
+              cache.put(req, res.clone());
+            }
+            return res;
+          })
+          .catch(() => cached);
+        return cached || fetchPromise;
+      })
+    )
   );
+});
+
+// Mensajes desde el cliente
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+  if (event.data && event.data.type === 'ENABLE_OFFLINE') {
+    console.log('[SW] Modo offline activado por el usuario');
+  }
+  if (event.data && event.data.type === 'DISABLE_OFFLINE') {
+    console.log('[SW] Modo offline desactivado');
+  }
 });

@@ -3110,3 +3110,98 @@ body.skin-distro-02 .status-badge {
   .cover-art { max-width: 220px; }
   .track-title { font-size: 1.15rem; }
 }
+
+/* ============================================================
+   🖥️ DESKTOP LAYOUT (≥ 900px) — v9.2
+   ============================================================ */
+@media (min-width: 900px) {
+  body {
+    padding: 20px;
+    align-items: stretch;
+  }
+
+  .app-container {
+    max-width: 1280px;
+    width: 100%;
+    height: calc(100dvh - 40px);
+    max-height: calc(100dvh - 40px);
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "player side"
+      "nav    side";
+    gap: 16px;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .player-card {
+    grid-area: player;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .bottom-nav {
+    grid-area: nav;
+  }
+
+  /* Overlays → panel lateral fijo */
+  .playlist-overlay,
+  .modal-overlay {
+    position: relative;
+    inset: auto;
+    grid-area: side;
+    display: none;
+    opacity: 1;
+    transform: none;
+    border-radius: var(--card-radius);
+    background: var(--card-bg);
+    backdrop-filter: var(--card-blur);
+    -webkit-backdrop-filter: var(--card-blur);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+
+  /* El que tenga .active se muestra como panel */
+  .playlist-overlay.active,
+  .modal-overlay.active {
+    display: flex;
+    transform: none;
+  }
+
+  /* Ocultar botón cerrar en desktop (el panel siempre está) */
+  .playlist-header .btn-icon[aria-label="Cerrar"] {
+    display: none;
+  }
+
+  /* Portada más grande */
+  .cover-art {
+    max-width: 340px;
+  }
+
+  /* Nav más grande */
+  .nav-btn {
+    font-size: 1.6rem;
+    padding: 14px 0;
+  }
+
+  /* Controles más grandes */
+  .btn-play {
+    width: 64px;
+    height: 64px;
+    font-size: 1.8rem;
+  }
+
+  .btn {
+    font-size: 1.7rem;
+    padding: 8px;
+  }
+
+  .icon-action-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 1.25rem;
+  }
+}

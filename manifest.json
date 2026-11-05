@@ -1,18 +1,75 @@
 {
-  "name": "Meow Audio App PC",
+  "id": "/meow-audio-app/",
+  "name": "MEOW AUDIO APP",
   "short_name": "MeowAudio",
-  "start_url": "https://galeed.github.io/Meow-Audio-App-PC/",
-  "scope": "https://galeed.github.io/Meow-Audio-App-PC/",
+  "description": "Reproductor de audio local con skins Classic, Consola TUI y @distro_01. Todo el procesamiento es local.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0f1015",
-  "theme_color": "#00f3ff",
+  "display_override": ["standalone", "fullscreen", "minimal-ui", "window-controls-overlay"],
   "orientation": "any",
+  "background_color": "#0f1015",
+  "theme_color": "#ff4757",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["music", "entertainment", "utilities"],
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "app-icon.ico",
+      "src": "favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/x-icon",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Fila de reproducción",
+      "short_name": "Fila",
+      "description": "Ir directo a la fila de reproducción",
+      "url": "./index.html?view=queue",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Ajustes",
+      "short_name": "Ajustes",
+      "description": "Abrir el panel de ajustes",
+      "url": "./index.html?view=settings",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

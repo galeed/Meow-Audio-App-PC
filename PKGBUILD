@@ -3,7 +3,7 @@
 pkgname=meow-audio-app-git
 pkgver=r1.0
 pkgrel=1
-pkgdesc="Mi aplicación HTML/CSS/JS instalable como app nativa de escritorio"
+pkgdesc="Meow Audio App HTML/CSS/JS instalable como app nativa de escritorio"
 arch=('any')
 url="https://github.com/galeed/Meow-Audio-App-PC.git
 license=('MIT')

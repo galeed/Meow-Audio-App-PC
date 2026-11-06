@@ -1,15 +1,14 @@
-# Maintainer: Galeed León <galeedx@gmail.com>
-
-pkgname=meow-audio-app-git
-pkgver=r1.0
+# Maintainer: galeed <galeedx@gmail.com>
+pkgname=meow-audio-app-pc-git
+pkgver=r124.7a31bde # Se autogenerará con tus commits actuales
 pkgrel=1
-pkgdesc="Meow Audio App HTML/CSS/JS instalable como app nativa de escritorio"
+pkgdesc="Reproductor de audio local PWA con sistema de Skins (HTML/CSS/JS)"
 arch=('any')
-url="https://github.com/galeed/Meow-Audio-App-PC.git
+url="https://github.com/galeed/Meow-Audio-App-PC"
 license=('MIT')
 depends=('electron')
 makedepends=('git' 'npm')
-source=("git+$url.git") 
+source=("git+$url.git")
 sha256sums=('SKIP')
 
 pkgver() {
@@ -20,31 +19,31 @@ pkgver() {
 package() {
   cd "$srcdir/${pkgname%-git}"
 
-  # 1. Instalar dependencias de Node.js si las hay
+  # 1. Instalar dependencias de desarrollo/producción requeridas en el entorno aislado
   npm install --production
 
-  # 2. Crear las rutas en el sistema del usuario
+  # 2. Crear las carpetas del sistema de destino
   install -d "$pkgdir/usr/lib/$pkgname"
   install -d "$pkgdir/usr/bin"
   install -d "$pkgdir/usr/share/applications"
 
-  # 3. Copiar los archivos que ya tienes en GitHub al sistema del usuario
-  # Puedes usar * si quieres copiar absolutamente todo lo que hay en tu repo
-  cp -r index.html styles.css app.js manifest.js sw.js main.js app-icon.ico package.json node_modules "$pkgdir/usr/lib/$pkgname/"
+  # 3. Copiar de forma exhaustiva todos los archivos necesarios de tu app
+  # Asegúrate de incluir el sw.js, manifest.json y las dependencias
+  cp -r index.html styles.css app.js main.js sw.js manifest.json package.json node_modules "$pkgdir/usr/lib/$pkgname/"
 
-  # 4. Crear el ejecutable del sistema
-  echo -e "#!/bin/sh\nexec electron /usr/lib/$pkgname/main.js \"\$@\"" > "$pkgdir/usr/bin/$pkgname"
-  chmod +755 "$pkgdir/usr/bin/$pkgname"
+  # 4. Crear el script ejecutable para arrancar Electron nativo
+  echo -e "#!/bin/sh\nexec electron /usr/lib/$pkgname/main.js \"\$@\"" > "$pkgdir/usr/bin/meow-audio-app"
+  chmod +755 "$pkgdir/usr/bin/meow-audio-app"
 
-  # 5. Crear el acceso directo para el menú de inicio
-  cat <<EOF > "$pkgdir/usr/share/applications/$pkgname.desktop"
+  # 5. Lanzador para el Menú de Aplicaciones
+  cat <<EOF > "$pkgdir/usr/share/applications/meow-audio-app.desktop"
 [Desktop Entry]
 Type=Application
 Name=Meow Audio App
-Comment=Aplicación nativa de escritorio
-Exec=/usr/bin/$pkgname
-Icon=utilities-terminal
+Comment=Reproductor PWA local con sistema de Skins
+Exec=/usr/bin/meow-audio-app
+Icon=audio-x-generic
 Terminal=false
-Categories=Utility;
+Categories=AudioVideo;Audio;Player;
 EOF
 }

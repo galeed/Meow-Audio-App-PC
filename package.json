@@ -1,12 +1,23 @@
 {
-  "name": "meow-audio-app",
-  "version": "1.0.0",
+  "name": "meow-audio-app-pc",
+  "version": "9.2.0",
+  "description": "Un reproductor de audio local PWA con sistema de Skins, construido 100% con HTML, CSS y JavaScript puro.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
-  "dependencies": {},
+  "keywords": [
+    "audio",
+    "player",
+    "pwa",
+    "electron",
+    "music",
+    "skins"
+  ],
+  "author": "galeed",
+  "license": "MIT",
   "devDependencies": {
-    "electron": "^30.0.0"
+    "electron": "^33.0.0"
   }
 }

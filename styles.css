@@ -3205,3 +3205,315 @@ body.skin-distro-02 .status-badge {
     font-size: 1.25rem;
   }
 }
+
+
+/* ============================================================
+   🖥️ DESKTOP LAYOUT (≥ 900px) — v9.2
+   Layout de 2 columnas: reproductor izquierda, panel derecha
+   ============================================================ */
+
+@media (min-width: 900px) {
+  /* --- Body y contenedor --- */
+  html, body {
+    overflow: hidden;
+  }
+
+  body {
+    padding: 20px;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .app-container {
+    max-width: 1280px;
+    width: 100%;
+    height: calc(100dvh - 40px);
+    max-height: calc(100dvh - 40px);
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "player side"
+      "nav    side";
+    gap: 16px;
+    padding: 0;
+    overflow: visible;
+  }
+
+  /* --- Reproductor (columna izquierda) --- */
+  .player-card {
+    grid-area: player;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
+  }
+
+  .player-card::-webkit-scrollbar {
+    width: 6px;
+  }
+  .player-card::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .player-card::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
+    opacity: 0.6;
+  }
+
+  /* --- Nav (debajo del reproductor) --- */
+  .bottom-nav {
+    grid-area: nav;
+    flex: 0 0 auto;
+  }
+
+  .nav-btn {
+    font-size: 1.6rem;
+    padding: 14px 0;
+  }
+
+  /* --- Overlays → panel lateral fijo (columna derecha) --- */
+  .playlist-overlay,
+  .modal-overlay {
+    position: relative;
+    inset: auto;
+    grid-area: side;
+    display: none;
+    opacity: 1;
+    transform: none;
+    border-radius: var(--card-radius);
+    background: var(--card-bg);
+    backdrop-filter: var(--card-blur);
+    -webkit-backdrop-filter: var(--card-blur);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* El overlay activo se muestra como panel */
+  .playlist-overlay.active,
+  .modal-overlay.active {
+    display: flex;
+    transform: none;
+    opacity: 1;
+  }
+
+  /* Ocultar botón "Cerrar" en desktop (el panel siempre está) */
+  .playlist-header .btn-icon[aria-label="Cerrar"] {
+    display: none;
+  }
+
+  /* --- Controles más grandes --- */
+  .cover-art {
+    max-width: 340px;
+  }
+
+  .btn-play {
+    width: 64px;
+    height: 64px;
+    font-size: 1.8rem;
+  }
+
+  .btn {
+    font-size: 1.7rem;
+    padding: 8px;
+  }
+
+  .btn-sub {
+    font-size: 1.3rem;
+  }
+
+  .icon-action-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 1.25rem;
+  }
+
+  .track-title {
+    font-size: 1.5rem;
+  }
+
+  .track-artist {
+    font-size: 1.05rem;
+  }
+
+  /* --- Hover states (solo en desktop con ratón) --- */
+  .btn:hover {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+
+  .btn-play:hover {
+    transform: scale(1.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .icon-action-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  body.skin-tui .icon-action-btn:hover,
+  body.skin-distro-01 .icon-action-btn:hover,
+  body.skin-distro-02 .icon-action-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px var(--glow-color);
+  }
+
+  .nav-btn:hover {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+
+  .playlist-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+  }
+
+  body.skin-tui .playlist-item:hover,
+  body.skin-distro-01 .playlist-item:hover,
+  body.skin-distro-02 .playlist-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .playlists-item:hover {
+    background: rgba(255, 255, 255, 0.14);
+    cursor: pointer;
+  }
+
+  .btn-action:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .bottom-sheet-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+  }
+
+  /* --- Scrollbars visibles y estilizadas en paneles --- */
+  .playlist-list,
+  .playlists-list,
+  .settings-body,
+  .bottom-sheet-list {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
+  }
+
+  .playlist-list::-webkit-scrollbar,
+  .playlists-list::-webkit-scrollbar,
+  .settings-body::-webkit-scrollbar,
+  .bottom-sheet-list::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .playlist-list::-webkit-scrollbar-track,
+  .playlists-list::-webkit-scrollbar-track,
+  .settings-body::-webkit-scrollbar-track,
+  .bottom-sheet-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .playlist-list::-webkit-scrollbar-thumb,
+  .playlists-list::-webkit-scrollbar-thumb,
+  .settings-body::-webkit-scrollbar-thumb,
+  .bottom-sheet-list::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 4px;
+    opacity: 0.7;
+  }
+
+  .playlist-list::-webkit-scrollbar-thumb:hover,
+  .playlists-list::-webkit-scrollbar-thumb:hover,
+  .settings-body::-webkit-scrollbar-thumb:hover,
+  .bottom-sheet-list::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-cyan);
+  }
+
+  /* --- Bottom sheets centrados en desktop --- */
+  .bottom-sheet-overlay {
+    align-items: center;
+  }
+
+  .bottom-sheet {
+    border-radius: 20px;
+    max-width: 480px;
+    max-height: 75vh;
+    transform: scale(0.95) translateY(20px);
+  }
+
+  .bottom-sheet-overlay.active .bottom-sheet {
+    transform: scale(1) translateY(0);
+  }
+
+  .bottom-sheet::before {
+    display: none;
+  }
+
+  /* --- Modal centrado --- */
+  .modal-box {
+    max-width: 460px;
+  }
+
+  /* --- Drag & drop más grande --- */
+  .drag-drop-content {
+    padding: 60px 50px;
+  }
+
+  .drag-drop-icon {
+    font-size: 6rem;
+  }
+
+  .drag-drop-title {
+    font-size: 1.8rem;
+  }
+
+  /* --- Ocultar botón rotar en desktop --- */
+  #btnRotate {
+    display: none !important;
+  }
+
+  /* --- Texto de bienvenida en panel cuando no hay overlay --- */
+  .app-container.desktop-idle .playlist-overlay:not(.active),
+  .app-container.desktop-idle .modal-overlay:not(.active) {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Pantallas muy grandes (≥ 1400px) — más espacio
+   ============================================================ */
+@media (min-width: 1400px) {
+  .app-container {
+    max-width: 1400px;
+    grid-template-columns: 480px 1fr;
+  }
+
+  .cover-art {
+    max-width: 380px;
+  }
+
+  .track-title {
+    font-size: 1.65rem;
+  }
+}
+
+/* ============================================================
+   Pantallas medianas-grandes (900px - 1100px) — ajuste fino
+   ============================================================ */
+@media (min-width: 900px) and (max-width: 1100px) {
+  .app-container {
+    grid-template-columns: 380px 1fr;
+  }
+
+  .cover-art {
+    max-width: 300px;
+  }
+
+  .btn-play {
+    width: 58px;
+    height: 58px;
+    font-size: 1.6rem;
+  }
+}

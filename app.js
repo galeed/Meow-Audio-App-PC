@@ -3074,3 +3074,269 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 else initialize();
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
+
+/* ============================================================
+   🖥️ DESKTOP ENHANCEMENTS v9.2
+   Añadir al final de app.js
+   ============================================================ */
+
+(function initDesktopMode() {
+  const DESKTOP_BREAKPOINT = 900;
+  const isDesktop = () => window.innerWidth >= DESKTOP_BREAKPOINT;
+
+  // ---- 1. Navegación desktop: Home muestra la cola por defecto ----
+  function closeAllOverlaysDesktopAware() {
+    playlistOverlay.classList.remove('active');
+    playlistsOverlay.classList.remove('active');
+    playlistDetailOverlay.classList.remove('active');
+    settingsOverlay.classList.remove('active');
+
+    if (isDesktop()) {
+      // En desktop, "Home" muestra la cola como panel lateral
+      playlistOverlay.classList.add('active');
+      playlistTitle.textContent = 'Fila de reproducción';
+      sortBar.style.display = 'flex';
+      searchBoxContainer.classList.remove('active');
+      searchInput.value = '';
+      renderPlaylistUI();
+    }
+  }
+
+  // Sobrescribir la función global
+  window.closeAllOverlays = closeAllOverlaysDesktopAware;
+
+  // Reasignar handlers de navegación con lógica desktop
+  function bindDesktopNav() {
+    // Clonar botones para eliminar listeners anteriores
+    const navButtons = {
+      home: navHome,
+      queue: navQueue,
+      playlists: navPlaylists,
+      search: navSearch,
+      settings: navSettings
+    };
+
+    // Reemplazar cada botón por un clon para limpiar listeners
+    Object.keys(navButtons).forEach(key => {
+      const btn = navButtons[key];
+      if (!btn) return;
+      const clone = btn.cloneNode(true);
+      btn.parentNode.replaceChild(clone, btn);
+      navButtons[key] = clone;
+    });
+
+    // Reasignar referencias globales
+    window.navHome = navButtons.home;
+    window.navQueue = navButtons.queue;
+    window.navPlaylists = navButtons.playlists;
+    window.navSearch = navButtons.search;
+    window.navSettings = navButtons.settings;
+
+    navButtons.home.addEventListener('click', () => {
+      setActiveTab(navButtons.home);
+      closeAllOverlaysDesktopAware();
+    });
+
+    navButtons.queue.addEventListener('click', () => {
+      setActiveTab(navButtons.queue);
+      closeAllOverlaysDesktopAware();
+    });
+
+    navButtons.playlists.addEventListener('click', () => {
+      setActiveTab(navButtons.playlists);
+      playlistOverlay.classList.remove('active');
+      playlistDetailOverlay.classList.remove('active');
+      settingsOverlay.classList.remove('active');
+      renderPlaylistsUI();
+      playlistsOverlay.classList.add('active');
+    });
+
+    navButtons.search.addEventListener('click', () => {
+      setActiveTab(navButtons.search);
+      playlistsOverlay.classList.remove('active');
+      playlistDetailOverlay.classList.remove('active');
+      settingsOverlay.classList.remove('active');
+      playlistTitle.textContent = 'Búsqueda';
+      sortBar.style.display = 'none';
+      searchBoxContainer.classList.add('active');
+      playlistOverlay.classList.add('active');
+      searchInput.value = '';
+      renderPlaylistUI();
+      setTimeout(() => searchInput.focus(), 50);
+    });
+
+    navButtons.settings.addEventListener('click', () => {
+      setActiveTab(navButtons.settings);
+      playlistOverlay.classList.remove('active');
+      playlistsOverlay.classList.remove('active');
+      playlistDetailOverlay.classList.remove('active');
+      settingsOverlay.classList.add('active');
+    });
+  }
+
+  // ---- 2. Atajos de teclado completos ----
+  function bindDesktopShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      // Ignorar si está escribiendo en input/select/textarea
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+
+      // Ignorar si hay un modal abierto (excepto Esc)
+      const anyModalOpen = document.querySelector('.modal-overlay-simple.active, .bottom-sheet-overlay.active');
+      if (anyModalOpen && e.code !== 'Escape') return;
+
+      switch (e.code) {
+        case 'Space':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          mainAudio.currentTime = Math.max(0, mainAudio.currentTime - 10);
+          updatePositionState();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          mainAudio.currentTime = Math.min(mainAudio.duration || 0, mainAudio.currentTime + 10);
+          updatePositionState();
+          break;
+        case 'KeyN':
+          e.preventDefault();
+          playNext();
+          break;
+        case 'KeyP':
+          e.preventDefault();
+          playPrev();
+          break;
+        case 'KeyM':
+          mainAudio.muted = !mainAudio.muted;
+          showToast(mainAudio.muted ? '🔇 Mute' : '🔊 Sonido');
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          mainAudio.volume = Math.min(1, mainAudio.volume + 0.1);
+          showToast(`🔊 Volumen: ${Math.round(mainAudio.volume * 100)}%`);
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          mainAudio.volume = Math.max(0, mainAudio.volume - 0.1);
+          showToast(`🔊 Volumen: ${Math.round(mainAudio.volume * 100)}%`);
+          break;
+        case 'KeyF':
+          e.preventDefault();
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen?.();
+          }
+          break;
+        case 'KeyO':
+          e.preventDefault();
+          fileInput.click();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          // Cerrar cualquier overlay/bottom sheet/modal
+          document.querySelectorAll('.bottom-sheet-overlay.active, .modal-overlay-simple.active')
+            .forEach(el => el.classList.remove('active'));
+          playerHeader?.classList.remove('menu-open');
+          if (isDesktop()) {
+            closeAllOverlaysDesktopAware();
+          }
+          break;
+        case 'KeyQ':
+          e.preventDefault();
+          navButtons.queue.click();
+          break;
+        case 'KeyL':
+          e.preventDefault();
+          navButtons.playlists.click();
+          break;
+        case 'KeyS':
+          if (e.ctrlKey || e.metaKey) return; // Ctrl+S no interceptar
+          e.preventDefault();
+          navButtons.settings.click();
+          break;
+      }
+    });
+  }
+
+  // ---- 3. Detectar cambios de tamaño ----
+  function handleResize() {
+    const desktop = isDesktop();
+    document.body.classList.toggle('is-desktop', desktop);
+
+    if (desktop) {
+      // Asegurar que hay un panel visible
+      const anyOverlayActive = document.querySelector('.playlist-overlay.active, .modal-overlay.active');
+      if (!anyOverlayActive) {
+        navButtons.home?.click();
+      }
+    }
+  }
+
+  // ---- 4. Drag & drop solo en desktop ----
+  function setupDesktopDragDrop() {
+    document.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+  }
+
+  // ---- 5. Click derecho en canciones → menú contextual ----
+  function setupDesktopContextMenu() {
+    document.addEventListener('contextmenu', (e) => {
+      const item = e.target.closest('.playlist-item');
+      if (!item) return;
+      const moreBtn = item.querySelector('.playlist-item-more');
+      if (moreBtn) {
+        e.preventDefault();
+        moreBtn.click();
+      }
+    });
+  }
+
+  // ---- 6. Media keys (teclas multimedia del teclado) ----
+  function setupMediaKeys() {
+    if (!('mediaSession' in navigator)) return;
+    // Ya configurado en setupMediaSession, pero nos aseguramos
+    try {
+      navigator.mediaSession.setActionHandler('play', () => {
+        userPausedManually = false;
+        mainAudio.play();
+        btnPlay.textContent = '⏸';
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        userPausedManually = true;
+        mainAudio.pause();
+        btnPlay.textContent = '▶';
+      });
+    } catch (e) {}
+  }
+
+  // ---- 7. Inicializar ----
+  function init() {
+    bindDesktopNav();
+    bindDesktopShortcuts();
+    setupDesktopDragDrop();
+    setupDesktopContextMenu();
+    setupMediaKeys();
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    // En desktop, mostrar la cola al cargar
+    if (isDesktop()) {
+      setTimeout(() => {
+        navButtons.queue.click();
+        setActiveTab(navButtons.queue);
+      }, 100);
+    }
+
+    console.log('🖥️ Desktop mode initialized. Breakpoint:', DESKTOP_BREAKPOINT + 'px');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

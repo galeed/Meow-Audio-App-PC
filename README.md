@@ -36,3 +36,40 @@ Tienes dos formas de instalar la aplicación: usando el paquete pre-compilado (m
 
 ```bash
 sudo pacman -U meow-audio-app-pc-*.pkg.tar.zst
+```
+
+4. ¡Listo! Ya puedes abrir la app desde tu menú de aplicaciones buscando "Meow Audio App" o ejecutando meow-audio-app en la terminal. 
+Opción 2: Compilar desde el código fuente (Recomendado para desarrolladores)
+ 
+Si quieres modificar el código o compilarlo tú mismo:
+1. Asegúrate de tener instaladas las dependencias de desarrollo:
+sudo pacman -S base-devel git electron
+2. Clona este repositorio y entra a la carpeta:
+git clone https://github.com/tu-usuario/Meow-Audio-App-PC.git
+cd Meow-Audio-App-PC
+3. Compila e instala usando makepkg:
+makepkg -si
+(makepkg descargará las fuentes, creará el paquete y lo instalará automáticamente con pacman). 
+ 
+⌨️ Atajos de Teclado
+Tecla Acción
+Espacio Play / Pausa
+← / → Retroceder / Avanzar 10 segundos
+N / P Siguiente / Anterior pista
+↑ / ↓ Subir / Bajar volumen
+M Mute / Unmute
+F Pantalla completa
+O Abrir archivos
+Ctrl + F Abrir barra de búsqueda
+Esc Cerrar paneles o menús
+
+ 
+🛠️ Tecnologías Utilizadas
+• HTML5 & CSS3 (Estilos puros, variables CSS para los temas).
+• JavaScript (Vanilla) (Lógica del reproductor, Web Audio API, IndexedDB).
+• Electron (Entorno de escritorio y ventana nativa).
+• Arch Linux (PKGBUILD) (Sistema de empaquetado para Linux). 
+📝 Notas para Desarrolladores
+• Caché de Service Worker: Si haces cambios en el CSS o JS, recuerda subir la versión en sw.js (ej. de v9.1 a v9.2) para forzar la actualización en los navegadores.
+• Hardware Acceleration: En Arch Linux (especialmente con ciertas GPUs), Electron puede parpadear. Hemos añadido app.disableHardwareAcceleration() en main.js para solucionarlo.
+• Actualizar PKGBUILD: Si subes cambios a GitHub, recuerda actualizar el pkgver en el PKGBUILD o simplemente borrar las carpetas src y pkg antes de volver a compilar. 

@@ -1,8 +1,8 @@
-# Maintainer: galeed <galeedx@gmail.com>
+# Maintainer: galeed <galeed@archlinux.local>
 pkgname=meow-audio-app-pc-git
-pkgver=r124.7a31bde # Se autogenerará con tus commits actuales
+pkgver=r124.7a31bde
 pkgrel=1
-pkgdesc="Reproductor de audio local PWA con sistema de Skins (HTML/CSS/JS)"
+pkgdesc="Reproductor de audio local PWA con sistema de skins (Electron wrapper)"
 arch=('any')
 url="https://github.com/galeed/Meow-Audio-App-PC"
 license=('MIT')
@@ -12,38 +12,50 @@ source=("git+$url.git")
 sha256sums=('SKIP')
 
 pkgver() {
-  cd "$srcdir/${pkgname%-git}"
+  # Entramos a la carpeta con el nombre EXACTO del repositorio
+  cd "$srcdir/Meow-Audio-App-PC"
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
+build() {
+  cd "$srcdir/Meow-Audio-App-PC"
+  # Si tienes un package.json para electron, instala dependencias aquí
+  # npm install --omit=dev
+  true
+}
+
 package() {
-  cd "$srcdir/${pkgname%-git}"
+  # CORREGIDO: usar el nombre exacto de la carpeta, no ${pkgname%-git}
+  cd "$srcdir/Meow-Audio-App-PC"
 
-  # 1. Instalar dependencias de desarrollo/producción requeridas en el entorno aislado
-  npm install --production
+  # 1. Instalar los archivos de la app
+  install -d "$pkgdir/usr/share/meow-audio-app"
+  cp -r * "$pkgdir/usr/share/meow-audio-app/"
 
-  # 2. Crear las carpetas del sistema de destino
-  install -d "$pkgdir/usr/lib/$pkgname"
+  # 2. Crear el lanzador ejecutable
   install -d "$pkgdir/usr/bin"
+  cat <<EOF > "$pkgdir/usr/bin/meow-audio-app"
+#!/bin/bash
+exec electron /usr/share/meow-audio-app/index.html "\$@"
+EOF
+  chmod +x "$pkgdir/usr/bin/meow-audio-app"
+
+  # 3. Crear el acceso directo (.desktop)
   install -d "$pkgdir/usr/share/applications"
-
-  # 3. Copiar de forma exhaustiva todos los archivos necesarios de tu app
-  # Asegúrate de incluir el sw.js, manifest.json y las dependencias
-  cp -r index.html styles.css app.js main.js sw.js manifest.json package.json node_modules "$pkgdir/usr/lib/$pkgname/"
-
-  # 4. Crear el script ejecutable para arrancar Electron nativo
-  echo -e "#!/bin/sh\nexec electron /usr/lib/$pkgname/main.js \"\$@\"" > "$pkgdir/usr/bin/meow-audio-app"
-  chmod +755 "$pkgdir/usr/bin/meow-audio-app"
-
-  # 5. Lanzador para el Menú de Aplicaciones
   cat <<EOF > "$pkgdir/usr/share/applications/meow-audio-app.desktop"
 [Desktop Entry]
-Type=Application
 Name=Meow Audio App
-Comment=Reproductor PWA local con sistema de Skins
-Exec=/usr/bin/meow-audio-app
-Icon=audio-x-generic
+Comment=Reproductor de audio local
+Exec=meow-audio-app %U
 Terminal=false
-Categories=AudioVideo;Audio;Player;
+Type=Application
+Icon=meow-audio-app
+Categories=Audio;Music;Player;
 EOF
+
+  # 4. Copiar el icono (asumiendo que tienes un icon-512.png en tu repo)
+  install -d "$pkgdir/usr/share/pixmaps"
+  if [ -f "icon-512.png" ]; then
+    cp icon-512.png "$pkgdir/usr/share/pixmaps/meow-audio-app.png"
+  fi
 }

@@ -3180,3 +3180,39 @@ body.skin-distro-02 .status-badge {
   .cover-art { max-width: 380px; }
   .track-title { font-size: 1.65rem; }
 }
+
+/* ============================================================
+   🖥️ FIX v9.7 — Fondo ASCII Gigante en el Panel Derecho (PC)
+   ============================================================ */
+@media (min-width: 900px) {
+  /* Aseguramos que el fondo ASCII se muestre en el panel lateral */
+  .playlist-overlay.active .overlay-ascii-bg,
+  .modal-overlay.active .overlay-ascii-bg {
+    display: flex !important;
+    opacity: 1 !important;
+  }
+
+  /* Hacemos que el ASCII sea MUCHO más grande en PC (en móvil era de 6px) */
+  .overlay-ascii-content {
+    font-size: 12px !important; /* El doble de grande */
+    line-height: 1.1 !important;
+    opacity: 0.65 !important;   /* Un poco más visible */
+    filter: brightness(1.3) !important;
+  }
+
+  /* Efecto de parpadeo más lento y suave para PC */
+  .overlay-ascii-content {
+    animation: neonPulseDesktop 6s ease-in-out infinite !important;
+  }
+}
+
+@keyframes neonPulseDesktop {
+  0%, 100% { 
+    opacity: 0.55; 
+    filter: brightness(1.2) drop-shadow(0 0 15px var(--accent)); 
+  }
+  50% { 
+    opacity: 0.85; 
+    filter: brightness(1.6) drop-shadow(0 0 30px var(--accent)); 
+  }
+}

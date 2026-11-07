@@ -12,31 +12,29 @@ source=("git+$url.git")
 sha256sums=('SKIP')
 
 pkgver() {
-  # Entramos a la carpeta con el nombre EXACTO del repositorio
   cd "$srcdir/Meow-Audio-App-PC"
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 build() {
   cd "$srcdir/Meow-Audio-App-PC"
-  # Si tienes un package.json para electron, instala dependencias aquí
+  # Si en el futuro añades dependencias de npm, se instalarían aquí
   # npm install --omit=dev
   true
 }
 
 package() {
-  # CORREGIDO: usar el nombre exacto de la carpeta, no ${pkgname%-git}
   cd "$srcdir/Meow-Audio-App-PC"
 
   # 1. Instalar los archivos de la app
   install -d "$pkgdir/usr/share/meow-audio-app"
   cp -r * "$pkgdir/usr/share/meow-audio-app/"
 
-  # 2. Crear el lanzador ejecutable
+  # 2. Crear el lanzador ejecutable apuntando a main.js
   install -d "$pkgdir/usr/bin"
   cat <<EOF > "$pkgdir/usr/bin/meow-audio-app"
 #!/bin/bash
-exec electron /usr/share/meow-audio-app/index.html "\$@"
+exec electron /usr/share/meow-audio-app/main.js "\$@"
 EOF
   chmod +x "$pkgdir/usr/bin/meow-audio-app"
 

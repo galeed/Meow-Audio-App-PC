@@ -2966,52 +2966,45 @@ body.skin-distro-02 .status-badge {
 }
 
 /* ============================================================
-   🖥️ DESKTOP LAYOUT (≥ 900px) — v9.5 PC COMPLETO
+/* ============================================================
+   🖥️ DESKTOP LAYOUT (≥ 900px) — v9.6 CORREGIDO
    ============================================================ */
 @media (min-width: 900px) {
   html, body {
     overflow: hidden;
+    background-color: var(--bg); /* Asegura el fondo oscuro en Electron */
   }
 
   body {
-    padding: 20px;
+    padding: 0; /* Quitamos márgenes para que llene la ventana */
     align-items: stretch;
     justify-content: center;
   }
 
   .app-container {
-    max-width: 1600px; /* Lo subimos para que quepa en pantallas grandes */
+    max-width: 100%;
     width: 100%;
-    height: calc(100dvh - 40px);
-    /* ... */
-    max-height: calc(100dvh - 40px);
+    height: 100dvh;
+    max-height: 100dvh;
     display: grid;
-    grid-template-columns: 420px 1fr;
+    grid-template-columns: 420px 1fr; /* Izquierda fija, derecha expansiva */
     grid-template-rows: 1fr auto;
     grid-template-areas:
       "player side"
       "nav    side";
     gap: 16px;
-    padding: 0;
-    overflow: visible;
+    padding: 16px;
+    overflow: hidden;
   }
 
   /* Reproductor (izquierda) */
   .player-card {
     grid-area: player;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent) transparent;
-  }
-
-  .player-card::-webkit-scrollbar { width: 6px; }
-  .player-card::-webkit-scrollbar-track { background: transparent; }
-  .player-card::-webkit-scrollbar-thumb {
-    background: var(--accent);
-    border-radius: 3px;
-    opacity: 0.6;
+    height: 100%;
+    margin: 0;
+    /* En PC dejamos que fluya naturalmente */
+    justify-content: flex-start;
   }
 
   /* Navegación (abajo izquierda) */
@@ -3020,12 +3013,7 @@ body.skin-distro-02 .status-badge {
     flex: 0 0 auto;
   }
 
-  .nav-btn {
-    font-size: 1.6rem;
-    padding: 14px 0;
-  }
-
-  /* Overlays → panel lateral fijo (derecha) */
+  /* Paneles (derecha) */
   .playlist-overlay,
   .modal-overlay {
     position: relative;
@@ -3042,6 +3030,7 @@ body.skin-distro-02 .status-badge {
     box-shadow: var(--card-shadow);
     overflow: hidden;
     min-height: 0;
+    height: 100%; /* Ocupa toda la columna derecha */
   }
 
   .playlist-overlay.active,
@@ -3051,10 +3040,53 @@ body.skin-distro-02 .status-badge {
     opacity: 1;
   }
 
-  /* Ocultar botón "Cerrar" (✕) en desktop */
+  /* Ocultar botón "Cerrar" (✕) en desktop porque el panel siempre está visible */
   .playlist-header .btn-icon[aria-label="Cerrar"] {
     display: none;
   }
+
+  /* Ajustes visuales para PC */
+  .cover-art { max-width: 340px; }
+  .btn-play { width: 64px; height: 64px; font-size: 1.8rem; }
+  .btn { font-size: 1.7rem; padding: 8px; }
+  .btn-sub { font-size: 1.3rem; }
+  .icon-action-btn { width: 46px; height: 46px; font-size: 1.25rem; }
+  .track-title { font-size: 1.5rem; }
+  .track-artist { font-size: 1.05rem; }
+
+  /* Hovers (efectos al pasar el ratón) */
+  .btn:hover { transform: scale(1.08); opacity: 0.9; }
+  .btn-play:hover { transform: scale(1.06); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+  .icon-action-btn:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
+  body.skin-tui .icon-action-btn:hover,
+  body.skin-distro-01 .icon-action-btn:hover,
+  body.skin-distro-02 .icon-action-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px var(--glow-color), inset 0 0 10px var(--glow-color);
+  }
+  .nav-btn:hover { opacity: 1; transform: scale(1.15); }
+  .playlist-item:hover { background: rgba(255, 255, 255, 0.12); cursor: pointer; }
+  body.skin-tui .playlist-item:hover, body.skin-distro-01 .playlist-item:hover, body.skin-distro-02 .playlist-item:hover { background: rgba(255, 255, 255, 0.04); }
+  .playlists-item:hover { background: rgba(255, 255, 255, 0.14); cursor: pointer; }
+
+  /* Scrollbars oscuros para PC */
+  .playlist-list, .playlists-list, .settings-body, .bottom-sheet-list {
+    scrollbar-width: thin; scrollbar-color: var(--accent) transparent;
+  }
+  .playlist-list::-webkit-scrollbar, .playlists-list::-webkit-scrollbar, .settings-body::-webkit-scrollbar, .bottom-sheet-list::-webkit-scrollbar { width: 8px; }
+  .playlist-list::-webkit-scrollbar-thumb, .playlists-list::-webkit-scrollbar-thumb, .settings-body::-webkit-scrollbar-thumb, .bottom-sheet-list::-webkit-scrollbar-thumb {
+    background: var(--accent); border-radius: 4px;
+  }
+
+  /* Ocultar botón de girar pantalla en PC */
+  #btnRotate { display: none !important; }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1400px) {
+  .app-container { grid-template-columns: 480px 1fr; }
+  .cover-art { max-width: 380px; }
+}
 
   /* Controles más grandes */
   .cover-art { max-width: 340px; }

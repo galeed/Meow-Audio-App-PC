@@ -6,13 +6,14 @@ app.disableHardwareAcceleration();
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1280,      // Más ancho para que el layout de 2 columnas respire bien
-    height: 800,      // Altura cómoda
-    minWidth: 950,    // Evita que el usuario la encoja tanto que rompa el diseño de PC
+    width: 1280,
+    height: 800,
+    minWidth: 950,
     minHeight: 600,
     title: "🐱 MEOW AUDIO APP PC",
-    autoHideMenuBar: true, // Oculta la barra de menú (Archivo, Editar, etc.)
-    icon: path.join(__dirname, 'icon-512.png'), // Añade el icono si tienes el archivo
+    autoHideMenuBar: true,
+    backgroundColor: '#0f1015', // <--- AÑADE ESTO
+    icon: path.join(__dirname, 'icon-512.png'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true

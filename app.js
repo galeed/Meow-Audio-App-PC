@@ -2447,11 +2447,13 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { up
   function init() {
     bindDesktopNav(); bindDesktopShortcuts(); setupDesktopDragDrop(); setupDesktopContextMenu(); handleResize();
     window.addEventListener('resize', handleResize);
+    
+    // Forzar la vista de "Fila" al abrir la app en desktop
     if (isDesktop()) {
       setTimeout(() => {
-        document.getElementById('navQueue')?.click();
-        setActiveTab(document.getElementById('navQueue'));
-      }, 100);
+        setActiveTab(window.navQueue);
+        closeAllOverlaysDesktopAware(); // Esto abre la fila automáticamente
+      }, 300); // 300ms para dar tiempo a que Electron cargue
     }
   }
 

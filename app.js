@@ -2460,3 +2460,84 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { up
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
+/* ============================================================
+   🔍 BÚSQUEDA INTELIGENTE (PC & Móvil)
+   ============================================================ */
+(function initSmartSearch() {
+  const searchBox = document.getElementById('searchBoxContainer');
+  const searchInput = document.getElementById('searchInput');
+  const sortBar = document.getElementById('sortBar');
+  const navSearchBtn = document.getElementById('navSearch');
+  const playlistList = document.getElementById('playlistContainer');
+
+  if (!searchBox || !searchInput || !navSearchBtn) return;
+
+  // 1. Mostrar la barra al hacer clic en la Lupa
+  navSearchBtn.addEventListener('click', () => {
+    // Forzamos que se abra el panel de la fila (por si acaso)
+    const playlistOverlay = document.getElementById('playlistOverlay');
+    if (playlistOverlay) playlistOverlay.classList.add('active');
+
+    // Ocultamos el selector de "Ordenar por" y mostramos la barra de búsqueda
+    if (sortBar) sortBar.style.display = 'none';
+    searchBox.classList.add('active');
+    
+    // Enfocar automáticamente el input para escribir rápido
+    setTimeout(() => searchInput.focus(), 100);
+  });
+
+  // 2. Ocultar la barra si se cambia a otra pestaña
+  ['navHome', 'navQueue', 'navPlaylists', 'navSettings'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.addEventListener('click', () => {
+        searchBox.classList.remove('active');
+        if (sortBar) sortBar.style.display = 'flex';
+        searchInput.value = ''; // Limpiar búsqueda
+      });
+    }
+  });
+
+  // 3. Filtro en tiempo real
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    const items = playlistList.querySelectorAll('.playlist-item');
+    
+    let matches = 0;
+    
+    items.forEach(item => {
+      // Buscamos en el texto del título y del artista
+      const text = item.textContent.toLowerCase();
+      if (text.includes(query)) {
+        item.style.display = 'flex'; // Mostrar
+        matches++;
+      } else {
+        item.style.display = 'none'; // Ocultar
+      }
+    });
+
+    // Si no hay resultados, mostrar un mensaje
+    let noResultsMsg = document.getElementById('noSearchResultsMsg');
+    if (matches === 0 && query !== '') {
+      if (!noResultsMsg) {
+        noResultsMsg = document.createElement('li');
+        noResultsMsg.id = 'noSearchResultsMsg';
+        noResultsMsg.style.cssText = 'text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.9rem;';
+        noResultsMsg.textContent = '🐾 No se encontraron canciones...';
+        playlistList.appendChild(noResultsMsg);
+      }
+      noResultsMsg.style.display = 'block';
+    } else if (noResultsMsg) {
+      noResultsMsg.style.display = 'none';
+    }
+  });
+
+  // 4. Atajo de teclado: Ctrl+F o Cmd+F para buscar
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+      e.preventDefault(); // Evitar que se abra la búsqueda del navegador
+      navSearchBtn.click();
+    }
+  });
+})();
